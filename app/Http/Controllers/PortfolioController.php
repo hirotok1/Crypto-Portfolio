@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
+
+class PortfolioController extends Controller
+{
+    public function index()
+    { 
+        // portfolios テーブルのデータを取得
+        $portfolios = DB::table('portfolios')->get();
+        
+        // コインの価格データを取得
+        $client = new Client();
+        $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
+
+        $currency = session('currency', 'USD'); // デフォルト通貨は USD
+        $response = $client->get($url, [
+            'headers' => [
+                'X-CMC_PRO_API_KEY' => config('services.coinmarketcap.api_key'),
+            ],
+            'query' => [
+                'start' => 1,
+                'limit' => 1000,
+                'convert' => $currency,
+            ],
+        ]);
+
+        $marketData = json_decode($response->getBody()->getContents(), true);
+
+        // 必要なデータ（価格と変動率）を収集
+        $coinData = collect($marketData['data'])->mapWithKeys(function ($item) use ($currency) {
+            return [
+                $item['symbol'] => [
+                    'price' => $item['quote'][$currency]['price'],
+                    'percent_change_1h' => $item['quote'][$currency]['percent_change_1h'],
+                    'percent_change_24h' => $item['quote'][$currency]['percent_change_24h'],
+                ]
+            ];
+        });
+
+        // ビューにデータを渡す
+        return view('portfolio', [
+            'portfolios' => $portfolios,
+            'coinData' => $coinData,
+        ]);
+    
+    }
+}

@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button[type="submit"] {
+    background-color: #2563eb !important; /* 青色 */
+    color: white !important; /* 文字色を白 */
+    border: none !important;
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s ease !important;
+}
+
+button[type="submit"]:hover {
+    background-color: #1d4ed8 !important; /* 濃い青 */
+}
+
+button[type="submit"]:focus {
+    outline: none !important;
+    ring: 2px solid #1d4ed8 !important;
+}
+
+.break-words {
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 20ch; /* 最大幅を約30文字に制限 */
+    white-space: pre-wrap; /* 改行を許可 */
+}
