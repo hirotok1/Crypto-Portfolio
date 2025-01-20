@@ -12,10 +12,10 @@ class PortfoliosSeeder extends Seeder
     public function run(): void
     {
         DB::table('portfolios')->insert([
-            'user_id' => '1',
+            'user_id' => '3',
             'place_id' => '1',
-            'coin' => 'HYPE',
-            'amount' => '50',
+            'coin' => 'TRUMP',
+            'amount' => '10',
             'created_at' => new DateTime(),
             'updated_at' => new DateTime(),
         ]);
