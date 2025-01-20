@@ -16,7 +16,8 @@
                             <th class="border border-gray-300 px-4 py-2">コインの価格</th>
                             <th class="border border-gray-300 px-4 py-2">1h%</th>
                             <th class="border border-gray-300 px-4 py-2">24h%</th>
-                            <th class="border border-gray-300 px-4 py-2">保有資産</th>
+                            <th class="border border-gray-300 px-4 py-2">保有枚数</th>
+                            <th class="border border-gray-300 px-4 py-2">保有額</th>
                             <th class="border border-gray-300 px-4 py-2">平均購入価格</th>
                             <th class="border border-gray-300 px-4 py-2">損益</th>
                             <th class="border border-gray-300 px-4 py-2">最後のトランザクション</th>
@@ -44,6 +45,10 @@
                                     {{ number_format($percentChange24h, 2) }}%
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $portfolio->amount }}</td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    {{ session('currency', 'USD') === 'USD' ? '$' : '¥' }}    
+                                    {{ number_format($price * $portfolio->amount, 2) }}
+                                </td>
                                 <td class="border border-gray-300 px-4 py-2">---</td> <!-- 平均購入価格 -->
                                 <td class="border border-gray-300 px-4 py-2">---</td> <!-- 損益 -->
                                 <td class="border border-gray-300 px-4 py-2">{{ $portfolio->updated_at }}</td>

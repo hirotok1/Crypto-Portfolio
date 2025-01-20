@@ -12,8 +12,9 @@ class PlacesSeeder extends Seeder
     public function run(): void
     {
         DB::table('places')->insert([
-            'name' => 'Coldcard',
-            'type' => 'HWW',
+            'user_id' => '3',
+            'place' => 'Hyperliquid',
+            'type' => 'exchange',
             'created_at' => new DateTime(),
             'updated_at' => new DateTime(),
         ]);

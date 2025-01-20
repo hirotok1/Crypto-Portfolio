@@ -13,4 +13,8 @@ class Place extends Model
     {
         return $this->hasMany(Portfolio::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

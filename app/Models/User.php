@@ -63,5 +63,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Wall::class);
     }
+
+    public function places()
+    {
+        return $this->hasMany(Place::class);
+    }
 }
 

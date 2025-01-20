@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Portfolio;
 
 class PortfolioController extends Controller
 {
     public function index()
     { 
+        
+        $user = Auth::user();
         // portfolios テーブルのデータを取得
-        $portfolios = DB::table('portfolios')->get();
+        $portfolios = Portfolio::where('user_id', $user->id)->get();
         
         // コインの価格データを取得
         $client = new Client();
