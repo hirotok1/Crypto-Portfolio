@@ -179,42 +179,31 @@
             </form>
 
             <!-- 振込フォーム -->
-            <form id="deposit-form" method="POST" action="{{ route('transaction.storeSend') }}" class="hidden">
+            <form id="deposit-form" method="POST" action="{{ route('transaction.storeDeposit') }}" class="hidden">
                 @csrf
-                <!-- コイン -->
+                <!-- 振込場所 -->
                 <div class="mb-6">
-                    <label for="coin" class="block text-sm font-medium text-gray-700">コイン</label>
-                        <select id="coina" name="coina" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                            @foreach($portfolioCoins as $coin)
-                                <option value="{{ $coin }}">{{ $coin }}</option>
+                    <label for="place" class="block text-sm font-medium text-gray-700">振込場所</label>
+                        <select id="deposit_place" name="place" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            @foreach($places as $place)
+                                <option value="{{ $place }}">{{ $place }}</option>
                             @endforeach
-                            <option value="other">新しいコインを追加</option>
+                            <option value="other">新しい振込場所を追加</option>
+                            <input type="text" id="deposit_place_other" name="place_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しい振込場所を入力" style="display: none;">
                         </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <!-- 送金元 -->
+                    <!-- 振込コイン -->
                     <div>
-                        <label for="placea" class="block text-sm font-medium text-gray-700">送金元</label>
-                        <select id="placea" name="placea" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <label for="coin" class="block text-sm font-medium text-gray-700">振込コイン</label>
+                        <select id="coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
                             @foreach($portfolioCoins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
-                            <option value="other">新しい場所を追加</option>
+                            <option value="other">新しいコインを追加</option>        
                         </select>
-                        <input type="text" id="coina_other" name="coina_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しい場所名を入力" style="display: none;">
-                        <input type="number" name="amounta" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
-                    </div>
-                    <!-- 送金先 -->
-                    <div>
-                        <label for="placeb" class="block text-sm font-medium text-gray-700">送金先</label>
-                        <select id="placeb" name="placeb" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                            @foreach($portfolioCoins as $coin)
-                                <option value="{{ $coin }}">{{ $coin }}</option>
-                            @endforeach
-                            <option value="other">新しい場所を追加</option>        
-                        </select>
-                        <input type="text" id="coinb_other" name="coinb_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しい場所名を入力" style="display: none;">
-                        <input type="number" name="amountb" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
+                        <input type="text" id="coin_other" name="coin_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
+                        <input type="number" name="amount" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
                     </div>
                 </div>
                 <!-- 手数料 -->
@@ -357,6 +346,16 @@
                 placeOther.style.display = 'none';
             }
         });
+
+        document.getElementById('deposit_place').addEventListener('change', function() {
+            var placeOther = document.getElementById('deposit_place_other');
+            if (this.value === 'other') {
+                placeOther.style.display = 'block';
+            } else {
+                placeOther.style.display = 'none';
+            }
+        });
+
 
     </script>
 </x-app-layout>
