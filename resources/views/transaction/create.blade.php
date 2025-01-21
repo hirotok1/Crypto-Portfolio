@@ -23,7 +23,7 @@
             <div class="flex justify-between mb-6">
                 <button id="swap-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-l-lg bg-gray-100">スワップ</button>
                 <button id="send-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-none bg-gray-200">送金</button>
-                <button id="receive-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-r-lg bg-gray-200">振込</button>
+                <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-r-lg bg-gray-200">振込</button>
             </div>
 
             <!-- スワップフォーム -->
@@ -108,11 +108,12 @@
                 <!-- コイン -->
                 <div class="mb-6">
                     <label for="coin" class="block text-sm font-medium text-gray-700">コイン</label>
-                        <select id="coina" name="coina" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <select id="coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
                             @foreach($portfolioCoins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
                             <option value="other">新しいコインを追加</option>
+                            <input type="text" id="coin_other" name="coin_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
                         </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mb-6">
@@ -178,7 +179,7 @@
             </form>
 
             <!-- 振込フォーム -->
-            <form id="receive-form" method="POST" action="{{ route('transaction.storeSend') }}" class="hidden">
+            <form id="deposit-form" method="POST" action="{{ route('transaction.storeSend') }}" class="hidden">
                 @csrf
                 <!-- コイン -->
                 <div class="mb-6">
@@ -259,44 +260,44 @@
     <script>
         const swapTab = document.getElementById('swap-tab');
         const sendTab = document.getElementById('send-tab');
-        const receiveTab = document.getElementById('receive-tab');
+        const depositTab = document.getElementById('deposit-tab');
         const swapForm = document.getElementById('swap-form');
         const sendForm = document.getElementById('send-form');
-        const receiveForm = document.getElementById('receive-form');
+        const depositForm = document.getElementById('deposit-form');
 
         swapTab.addEventListener('click', () => {
             swapForm.classList.remove('hidden');
             sendForm.classList.add('hidden');
-            receiveForm.classList.add('hidden');
+            depositForm.classList.add('hidden');
             //swapタブのbg色のみ明るく
             swapTab.classList.add('bg-gray-100');
             swapTab.classList.remove('bg-gray-200');
             sendTab.classList.remove('bg-gray-100');
             sendTab.classList.add('bg-gray-200');
-            receiveTab.classList.remove('bg-gray-100');
-            receiveTab.classList.add('bg-gray-200');
+            depositTab.classList.remove('bg-gray-100');
+            depositTab.classList.add('bg-gray-200');
         });
 
         sendTab.addEventListener('click', () => {
             sendForm.classList.remove('hidden');
             swapForm.classList.add('hidden');
-            receiveForm.classList.add('hidden');
+            depositForm.classList.add('hidden');
             //sendタブのbg色のみ明るく
             swapTab.classList.add('bg-gray-200');
             swapTab.classList.remove('bg-gray-100');
             sendTab.classList.add('bg-gray-100');
             sendTab.classList.remove('bg-gray-200');
-            receiveTab.classList.add('bg-gray-200');
-            receiveTab.classList.remove('bg-gray-100');            
+            depositTab.classList.add('bg-gray-200');
+            depositTab.classList.remove('bg-gray-100');            
         });
        
-        receiveTab.addEventListener('click', () => {
-            receiveForm.classList.remove('hidden');
+        depositTab.addEventListener('click', () => {
+            depositForm.classList.remove('hidden');
             swapForm.classList.add('hidden');
             sendForm.classList.add('hidden');
-            //receiveタブのbg色のみ明るく
-            receiveTab.classList.add('bg-gray-100');
-            receiveTab.classList.remove('bg-gray-200');
+            //depositタブのbg色のみ明るく
+            depositTab.classList.add('bg-gray-100');
+            depositTab.classList.remove('bg-gray-200');
             swapTab.classList.remove('bg-gray-100');
             swapTab.classList.add('bg-gray-200');
             sendTab.classList.remove('bg-gray-100');
@@ -323,6 +324,15 @@
         
         document.getElementById('place').addEventListener('change', function() {
             var placeOther = document.getElementById('place_other');
+            if (this.value === 'other') {
+                placeOther.style.display = 'block';
+            } else {
+                placeOther.style.display = 'none';
+            }
+        });
+
+        document.getElementById('coin').addEventListener('change', function() {
+            var placeOther = document.getElementById('coin_other');
             if (this.value === 'other') {
                 placeOther.style.display = 'block';
             } else {

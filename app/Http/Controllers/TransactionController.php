@@ -129,6 +129,38 @@ class TransactionController extends Controller
             'customtime' => 'required|date',
             'memo' => 'nullable|string',
         ]);
+         // placeaの値が「other」の場合、placea_otherの値を使用
+        $placea = $request->input('placea') === 'other' ? $request->input('placea_other') : $request->input('placea');
+        // placebの値が「other」の場合、placeb_otherの値を使用
+        $placeb = $request->input('placeb') === 'other' ? $request->input('placeb_other') : $request->input('placeb');
+
+        DB::table('sends')->insert([
+            'user_id' => auth()->id(),
+            'coin' => $validated['coin'],
+            'placea' => $validated['placea'],
+            'amounta' => $validated['amounta'],
+            'placeb' => $validated['placeb'],
+            'amountb' => $validated['amountb'],
+            'customfeecoin' => $validated['customfeecoin'] ?? null,
+            'customfee' => $validated['customfee'] ?? 0,
+            'customtime' => $validated['customtime'],
+            'memo' => $validated['memo'] ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return redirect()->route('transaction.create')->with('success', '送金が記録されました！');
+    }
+
+    // 振込データの保存
+    public function storeDeposit(Request $request)
+    {
+        $validated = $request->validate([
+            'place' => 'required|string',
+            'coin' => 'required|string',
+            'amount' => 'required|numeric',
+            'customtime' => 'required|date',
+            'memo' => 'nullable|string',
+        ]);
          // coinaの値が「other」の場合、coina_otherの値を使用
         $coina = $request->input('coina') === 'other' ? $request->input('coina_other') : $request->input('coina');
 

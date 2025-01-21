@@ -23,6 +23,7 @@ Route::get('/transaction/index', [TransactionController::class, 'index'])->name(
 Route::get('/transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
 Route::post('/transaction/swap', [TransactionController::class, 'storeSwap'])->name('transaction.storeSwap');
 Route::post('/transaction/send', [TransactionController::class, 'storeSend'])->name('transaction.storeSend');
+Route::post('/transaction/deposit', [TransactionController::class, 'storeDeposit'])->name('transaction.storeDeposit');
 
 Route::get('/set-currency/{currency}', function ($currency) {
     session(['currency' => $currency]);

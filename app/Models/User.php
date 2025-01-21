@@ -68,5 +68,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Place::class);
     }
+
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }
 
