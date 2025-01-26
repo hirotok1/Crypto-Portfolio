@@ -196,13 +196,13 @@
                     <!-- 振込コイン -->
                     <div>
                         <label for="coin" class="block text-sm font-medium text-gray-700">振込コイン</label>
-                        <select id="coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <select id="deposit_coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
                             @foreach($portfolioCoins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
                             <option value="other">新しいコインを追加</option>        
                         </select>
-                        <input type="text" id="coin_other" name="coin_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
+                        <input type="text" id="deposit_coin_other" name="coin_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
                         <input type="number" name="amount" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
                     </div>
                 </div>
@@ -356,6 +356,14 @@
             }
         });
 
-
+        document.getElementById('deposit_coin').addEventListener('change', function() {
+            var placeOther = document.getElementById('deposit_coin_other');
+            if (this.value === 'other') {
+                placeOther.style.display = 'block';
+            } else {
+                placeOther.style.display = 'none';
+            }
+        });
+        
     </script>
 </x-app-layout>
