@@ -206,21 +206,6 @@
                         <input type="number" name="amount" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
                     </div>
                 </div>
-                <!-- 手数料 -->
-                <div class="mb-6">
-                    <label for="customfee" class="block text-sm font-medium text-gray-700">手数料</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600 bg-gray-100 p-2 rounded-md">
-                                自動計算：<span id="auto-fee">--</span>
-                            </p>
-                        </div>
-                        <div>
-                            <input type="text" name="customfeecoin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm" placeholder="コイン名 (例: JPY)">
-                            <input type="number" name="customfee" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="手数料">
-                        </div>
-                    </div>
-                </div>
                 <!-- 日時 -->
                 <div class="mb-6">
                     <label for="customtime" class="block text-sm font-medium text-gray-700">日時</label>
@@ -364,6 +349,6 @@
                 placeOther.style.display = 'none';
             }
         });
-        
+
     </script>
 </x-app-layout>
