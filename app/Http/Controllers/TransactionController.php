@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Swap;
+use App\Models\Send;
+use App\Models\Deposit;
 use App\Http\Requests\SendRequest;
 use App\Http\Requests\DepositRequest;
 
@@ -18,7 +20,11 @@ class TransactionController extends Controller
         $user = Auth::user();
         
         // Swaps テーブルのデータを取得
-        $swaps = DB::table('swaps')->where('user_id', $user->id)->get();
+        $swaps = DB::table('swaps')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
+        // Sends テーブルのデータを取得
+        $sends = DB::table('sends')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();        
+        // Deposits テーブルのデータを取得
+        $deposits = DB::table('deposits')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
 
         // CoinMarketCap API クライアント
         $client = new Client();
@@ -60,6 +66,8 @@ class TransactionController extends Controller
 
         return view('transaction.index', [
             'swaps' => $swaps,
+            'sends' => $sends,
+            'deposits' => $deposits,
             'logos' => $logos,
         ]);
     }
@@ -167,6 +175,5 @@ class TransactionController extends Controller
         ]);
         return redirect()->route('transaction.create')->with('success', '振込が記録されました！');
     }
-
-   
+  
 }
