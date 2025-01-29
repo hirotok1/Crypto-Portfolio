@@ -19,19 +19,26 @@ class TransactionController extends Controller
     {
         // 現在のユーザーを取得
         $user = Auth::user();
-        
         // Swaps テーブルのデータを取得
         $swaps = DB::table('swaps')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
         // Sends テーブルのデータを取得
         $sends = DB::table('sends')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();        
         // Deposits テーブルのデータを取得
         $deposits = DB::table('deposits')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
+        // ユーザーの全changesを取得
+        $changes = DB::table('changes')->where('user_id', $user->id)->get();
+
 
         // CoinMarketCap API クライアント
         $client = new Client();
 
         // スワップに登場する全てのコイン名を取得
-        $coinSymbols = $swaps->pluck('coina')->merge($swaps->pluck('coinb'))->unique();
+        //$coinSymbols = $swaps->pluck('coina')->merge($swaps->pluck('coinb'))->unique();
+        // changesに登場する全てのコイン名を取得
+        $coinSymbols = $changes->where('related_type', 'swaps')->pluck('coin')
+            ->merge($changes->where('related_type', 'sends')->pluck('coin'))
+            ->merge($changes->where('related_type', 'deposits')->pluck('coin'))
+            ->unique();
 
         // CoinMarketCap API からコインIDを取得
         $mapUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map';
@@ -40,7 +47,6 @@ class TransactionController extends Controller
                 'X-CMC_PRO_API_KEY' => config('services.coinmarketcap.api_key'),
             ],
         ]);
-
         $mapData = json_decode($mapResponse->getBody()->getContents(), true);
 
         // CoinMarketCapのデータからIDを抽出
@@ -48,23 +54,25 @@ class TransactionController extends Controller
             ->whereIn('symbol', $coinSymbols)
             ->pluck('id')
             ->implode(',');
-
-        // コイン情報の取得 (ロゴ取得)
-        $infoUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
-        $infoResponse = $client->get($infoUrl, [
-            'headers' => [
-                'X-CMC_PRO_API_KEY' => config('services.coinmarketcap.api_key'),
-            ],
-            'query' => ['id' => $coinIds],
-        ]);
-
-        $logoData = json_decode($infoResponse->getBody()->getContents(), true);
-
-        // ロゴをキー:ID、値:ロゴURLの形に変換
-        $logos = collect($logoData['data'])->mapWithKeys(function ($item) {
-            return [$item['symbol'] => $item['logo']];
-        });
-
+        // ここで $coinIds が空の場合、API にリクエストしないようにする
+        if (empty($coinIds)) {
+            $logos = [];
+        } else {
+            // コイン情報の取得 (ロゴ取得)
+            $infoUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
+            $infoResponse = $client->get($infoUrl, [
+                'headers' => [
+                    'X-CMC_PRO_API_KEY' => config('services.coinmarketcap.api_key'),
+                ],
+                'query' => ['id' => $coinIds],
+            ]);
+            $logoData = json_decode($infoResponse->getBody()->getContents(), true);
+            // ロゴをキー:ID、値:ロゴURLの形に変換
+            $logos = collect($logoData['data'])->mapWithKeys(function ($item) {
+                return [$item['symbol'] => $item['logo']];
+            });
+        }
+        
         return view('transaction.index', [
             'swaps' => $swaps,
             'sends' => $sends,
@@ -77,7 +85,6 @@ class TransactionController extends Controller
     {
         // 現在のユーザーを取得
         $user = Auth::user();
-
         // ユーザーの全changesを取得
         $changes = DB::table('changes')->where('user_id', $user->id)->get();
         // ユーザーの全changesのうち場所を取得し、重複を削除
