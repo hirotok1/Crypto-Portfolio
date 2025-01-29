@@ -5,11 +5,6 @@
             display: none; /* ヘッダー全体を非表示 */
         }
     </style>
-    <!--<x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('トランザクション') }}
-        </h2>
-    </x-slot>-->
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -51,13 +46,9 @@
                                         <td>{{ rtrim(rtrim(number_format($swap->customfee, 8), '0'), '.') }}{{ $swap->customfeecoin }}</td>
                                         <td class="break-words">{{ $swap->memo }}</td>
                                         <td>
-                                            <form action="{{ route('transaction.deleteSwap', $swap->id) }}" method="POST" onsubmit="return confirmDelete(event)">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600">
-                                                    削除
-                                                </button>
-                                            </form>
+                                            <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $swap->id }})">
+                                                削除
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -97,13 +88,9 @@
                                         </td>
                                         <td class="break-words">{{ $send->memo }}</td>
                                         <td>
-                                            <form action="{{ route('transaction.deleteSend', $send->id) }}" method="POST" onsubmit="return confirmDelete(event)">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600">
-                                                    削除
-                                                </button>
-                                            </form>
+                                            <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $send->id }})">
+                                                削除
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -130,13 +117,9 @@
                                         <td>{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}</td>
                                         <td class="break-words">{{ $deposit->memo }}</td>
                                         <td>
-                                            <form action="{{ route('transaction.deleteDeposit', $deposit->id) }}" method="POST" onsubmit="return confirmDelete(event)">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600">
-                                                    削除
-                                                </button>
-                                            </form>
+                                            <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }})">
+                                                削除
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -147,6 +130,54 @@
             </div>
         </div>
     </div>
+
+    <!-- スワップ削除確認モーダル -->
+    <div id="delete-swap-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
+            <p class="text-center">本当に削除しますか？</p>
+            <div class="flex justify-center mt-4">
+                <button id="cancel-delete-swap-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteSwapModal()">キャンセル</button>
+                <form id="delete-swap-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                        削除
+                    </button>
+                </form>
+            </div>
+        </div>
+    <!-- 送金削除確認モーダル -->
+    <div id="delete-send-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
+            <p class="text-center">本当に削除しますか？</p>
+            <div class="flex justify-center mt-4">
+                <button id="cancel-delete-send-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteSendModal()">キャンセル</button>
+                <form id="delete-send-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                        削除
+                    </button>
+                </form>
+            </div>
+        </div>
+    <!-- 振込削除確認モーダル -->
+    <div id="delete-deposit-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
+            <p class="text-center">本当に削除しますか？</p>
+            <div class="flex justify-center mt-4">
+                <button id="cancel-delete-deposit-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteDepositModal()">キャンセル</button>
+                <form id="delete-deposit-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                        削除
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- タブ切り替えスクリプト -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -195,5 +226,34 @@
                 event.target.submit();
             }
         }
+
+        <!-- スワップ削除モーダル表示用 -->
+        function showDeleteSwapModal(id) {
+            document.getElementById('delete-swap-form').action = '/transaction/delete-swap/' + id;
+            document.getElementById('delete-swap-modal').classList.remove('hidden');
+        }
+        <!-- スワップ削除モーダル非表示用 -->
+        function hideDeleteSwapModal() {
+            document.getElementById('delete-swap-modal').classList.add('hidden');
+        }
+        <!-- 送金削除モーダル表示用 -->
+        function showDeleteSendModal(id) {
+            document.getElementById('delete-send-form').action = '/transaction/delete-send/' + id;
+            document.getElementById('delete-send-modal').classList.remove('hidden');
+        }
+        <!-- 送金削除モーダル非表示用 -->
+        function hideDeleteSendModal() {
+            document.getElementById('delete-send-modal').classList.add('hidden');
+        }
+        <!-- 振込削除モーダル表示用 -->
+        function showDeleteDepositModal(id) {
+            document.getElementById('delete-deposit-form').action = '/transaction/delete-deposit/' + id;
+            document.getElementById('delete-deposit-modal').classList.remove('hidden');
+        }
+        <!-- 振込削除モーダル非表示用 -->
+        function hideDeleteDepositModal() {
+            document.getElementById('delete-deposit-modal').classList.add('hidden');
+        }
+        
     </script>
 </x-app-layout>
