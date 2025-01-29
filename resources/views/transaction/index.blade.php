@@ -18,7 +18,7 @@
                     <div class="flex justify-between mb-4">
                         <button id="swap-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-l-lg bg-gray-100">スワップ</button>
                         <button id="send-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-none bg-gray-200">送金</button>
-                        <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-r-lg bg-gray-200">振込</button>
+                        <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-r-lg bg-gray-200">振込 / 引出</button>
                     </div>
                     <!-- スワップテーブル -->
                     <div id="swap-table" class="block">
@@ -30,6 +30,7 @@
                                     <th>スワップ</th>
                                     <th>手数料</th>
                                     <th class="w-1/4">メモ</th>
+                                    <th>操作</th>
                                     
                                 </tr>
                             </thead>
@@ -49,7 +50,15 @@
                                         </td>
                                         <td>{{ rtrim(rtrim(number_format($swap->customfee, 8), '0'), '.') }}{{ $swap->customfeecoin }}</td>
                                         <td class="break-words">{{ $swap->memo }}</td>
-                                        
+                                        <td>
+                                            <form action="{{ route('transaction.deleteSwap', $swap->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600">
+                                                    削除
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -68,7 +77,7 @@
                                     <th>送金先</th><!--送金先場所と枚数-->
                                     <th>その他手数料</th>
                                     <th class="w-1/4">メモ</th>
-                                    
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,8 +94,17 @@
                                             {{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}{{ $send->coin }}
                                         </td>
                                         <td>{{ rtrim(rtrim(number_format($send->customfee, 8), '0'), '.') }}{{ $send->customfeecoin }}
-                                       </td>
+                                        </td>
                                         <td class="break-words">{{ $send->memo }}</td>
+                                        <td>
+                                            <form action="{{ route('transaction.deleteSend', $send->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600">
+                                                    削除
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -98,9 +116,10 @@
                             <thead>
                                 <tr>
                                     <th>日時</th>
-                                    <th>振込先</th>
+                                    <th>場所</th>
                                     <th>コイン</th>
                                     <th class="w-1/4">メモ</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -110,6 +129,15 @@
                                         <td>{{ $deposit->place }}</td>
                                         <td>{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}</td>
                                         <td class="break-words">{{ $deposit->memo }}</td>
+                                        <td>
+                                            <form action="{{ route('transaction.deleteDeposit', $deposit->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600">
+                                                    削除
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -160,5 +188,12 @@
             document.getElementById('send-table').classList.add('hidden');
             document.getElementById('deposit-table').classList.remove('hidden');
         });
+
+        function confirmDelete(event) {
+            event.preventDefault();
+            if(confirm('本当に削除しますか？')) {
+                event.target.submit();
+            }
+        }
     </script>
 </x-app-layout>
