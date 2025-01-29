@@ -254,6 +254,12 @@
         function hideDeleteDepositModal() {
             document.getElementById('delete-deposit-modal').classList.add('hidden');
         }
-        
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('JavaScript is loaded correctly in index.blade.php');
+
+            // 確認用
+            console.log(document.getElementById('delete-swap-modal')); // null ならJSのロード前にDOMを参照している
+        });
+
     </script>
 </x-app-layout>
