@@ -54,6 +54,7 @@ class TransactionController extends Controller
             ->whereIn('symbol', $coinSymbols)
             ->pluck('id')
             ->implode(',');
+        dd($coinIds);
         // ここで $coinIds が空の場合、API にリクエストしないようにする
         if (empty($coinIds)) {
             $logos = [];
@@ -72,7 +73,7 @@ class TransactionController extends Controller
                 return [$item['symbol'] => $item['logo']];
             });
         }
-        
+
         return view('transaction.index', [
             'swaps' => $swaps,
             'sends' => $sends,
