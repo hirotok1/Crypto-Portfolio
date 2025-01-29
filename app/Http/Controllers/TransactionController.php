@@ -27,7 +27,7 @@ class TransactionController extends Controller
         $deposits = DB::table('deposits')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
         // ユーザーの全changesを取得
         $changes = DB::table('changes')->where('user_id', $user->id)->get();
-        /*
+        /*コインのロゴいらないからコメントアウト
         // changesが空の場合、logosを空にして処理をスキップ
         if ($changes->isEmpty()) {
             $logos = collect();

@@ -33,6 +33,7 @@
                 <div class="mb-6">
                     <label for="place" class="block text-sm font-medium text-gray-700">取引所</label>
                     <select id="place" name="place" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <option value="">取引所を選択</option>
                         @foreach($places as $place)
                             <option value="{{ $place }}">{{ $place }}</option>
                         @endforeach
@@ -45,6 +46,7 @@
                     <div>
                         <label for="coina" class="block text-sm font-medium text-gray-700">スワップ元コイン</label>
                         <select id="coina" name="coina" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">コインを選択</option>
                             @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
@@ -57,6 +59,7 @@
                     <div>
                         <label for="coinb" class="block text-sm font-medium text-gray-700">スワップ先コイン</label>
                         <select id="coinb" name="coinb" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">コインを選択</option>
                             @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
@@ -109,6 +112,7 @@
                 <div class="mb-6">
                     <label for="coin" class="block text-sm font-medium text-gray-700">コイン</label>
                         <select id="coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">コインを選択</option>
                             @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
@@ -121,6 +125,7 @@
                     <div>
                         <label for="placea" class="block text-sm font-medium text-gray-700">送金元</label>
                         <select id="placea" name="placea" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">場所を選択</option>
                             @foreach($places as $place)
                                 <option value="{{ $place }}">{{ $place }}</option>
                             @endforeach
@@ -133,6 +138,7 @@
                     <div>
                         <label for="placeb" class="block text-sm font-medium text-gray-700">送金先</label>
                         <select id="placeb" name="placeb" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">場所を選択</option>
                             @foreach($places as $place)
                                 <option value="{{ $place }}">{{ $place }}</option>
                             @endforeach
@@ -185,6 +191,7 @@
                 <div class="mb-6">
                     <label for="place" class="block text-sm font-medium text-gray-700">振込場所</label>
                         <select id="deposit_place" name="place" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">場所を選択</option>
                             @foreach($places as $place)
                                 <option value="{{ $place }}">{{ $place }}</option>
                             @endforeach
@@ -197,6 +204,7 @@
                     <div>
                         <label for="coin" class="block text-sm font-medium text-gray-700">振込コイン</label>
                         <select id="deposit_coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                            <option value="">コインを選択</option>
                             @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
