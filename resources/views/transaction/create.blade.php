@@ -45,7 +45,7 @@
                     <div>
                         <label for="coina" class="block text-sm font-medium text-gray-700">スワップ元コイン</label>
                         <select id="coina" name="coina" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                            @foreach($portfolioCoins as $coin)
+                            @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
                             <option value="other">新しいコインを追加</option>
@@ -57,7 +57,7 @@
                     <div>
                         <label for="coinb" class="block text-sm font-medium text-gray-700">スワップ先コイン</label>
                         <select id="coinb" name="coinb" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                            @foreach($portfolioCoins as $coin)
+                            @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
                             <option value="other">新しいコインを追加</option>        
@@ -109,7 +109,7 @@
                 <div class="mb-6">
                     <label for="coin" class="block text-sm font-medium text-gray-700">コイン</label>
                         <select id="coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                            @foreach($portfolioCoins as $coin)
+                            @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
                             <option value="other">新しいコインを追加</option>
@@ -197,7 +197,7 @@
                     <div>
                         <label for="coin" class="block text-sm font-medium text-gray-700">振込コイン</label>
                         <select id="deposit_coin" name="coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                            @foreach($portfolioCoins as $coin)
+                            @foreach($coins as $coin)
                                 <option value="{{ $coin }}">{{ $coin }}</option>
                             @endforeach
                             <option value="other">新しいコインを追加</option>        
