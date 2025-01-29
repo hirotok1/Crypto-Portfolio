@@ -13,4 +13,8 @@ class Deposit extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function changes()
+    {
+        return $this->morphMany(Change::class, 'related');
+    }
 }

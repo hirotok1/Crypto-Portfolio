@@ -12,7 +12,6 @@ class PortfolioController extends Controller
 {
     public function index()
     { 
-        
         $user = Auth::user();
         // portfolios テーブルのデータを取得
         $portfolios = Portfolio::where('user_id', $user->id)->get();
@@ -34,7 +33,6 @@ class PortfolioController extends Controller
         ]);
 
         $marketData = json_decode($response->getBody()->getContents(), true);
-
         // 必要なデータ（価格と変動率）を収集
         $coinData = collect($marketData['data'])->mapWithKeys(function ($item) use ($currency) {
             return [
@@ -46,10 +44,24 @@ class PortfolioController extends Controller
             ];
         });
 
+        // ユーザーの全changesを取得
+        $changes = DB::table('changes')->where('user_id', $user->id)->get();
+        // ユーザーの全changesのうちコインごとに集計
+        $coinBalance = $changes->groupBy('coin')->map(function ($group) {
+            return $group->sum('change');
+        });
+        // ユーザーの全changesのうち各場所の全コインを集計
+        $placeBalance = $changes->groupBy('place')->map(function ($group) {
+            return $group->groupBy('coin')->map(function ($group) {
+                return $group->sum('change');
+            });
+        });
         // ビューにデータを渡す
         return view('portfolio', [
             'portfolios' => $portfolios,
             'coinData' => $coinData,
+            'coinBalance' => $coinBalance,
+            'placeBalance' => $placeBalance,
         ]);
     
     }

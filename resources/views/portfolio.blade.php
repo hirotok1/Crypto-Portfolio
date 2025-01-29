@@ -11,29 +11,24 @@
                 <table class="border-collapse border border-gray-200 w-11/12 text-center">
                     <thead>
                         <tr>
-                            <th class="border border-gray-300 px-4 py-2">#</th>
                             <th class="border border-gray-300 px-4 py-2">コイン</th>
                             <th class="border border-gray-300 px-4 py-2">コインの価格</th>
                             <th class="border border-gray-300 px-4 py-2">1h%</th>
                             <th class="border border-gray-300 px-4 py-2">24h%</th>
                             <th class="border border-gray-300 px-4 py-2">保有枚数</th>
                             <th class="border border-gray-300 px-4 py-2">保有額</th>
-                            <th class="border border-gray-300 px-4 py-2">平均購入価格</th>
-                            <th class="border border-gray-300 px-4 py-2">損益</th>
-                            <th class="border border-gray-300 px-4 py-2">最後のトランザクション</th>
                         </tr>
                     </thead>
+                    <!-- coinBalanceはポートフォリオの保有枚数 -->
                     <tbody>
-                        @foreach ($portfolios as $index => $portfolio)
+                        @foreach ($coinBalance as $coin => $coinBalance)
                             @php
-                                $coin = $portfolio->coin;
                                 $price = $coinData[$coin]['price'] ?? 0;
                                 $percentChange1h = $coinData[$coin]['percent_change_1h'] ?? 0;
                                 $percentChange24h = $coinData[$coin]['percent_change_24h'] ?? 0;
                             @endphp
                             <tr>
-                                <td class="border border-gray-300 px-4 py-2">{{ $index + 1 }}</td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $portfolio->coin }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ $coin }}</td>
                                 <td class="border border-gray-300 px-4 py-2">
                                     {{ session('currency', 'USD') === 'USD' ? '$' : '¥' }}
                                     {{ number_format($price, 2) }}
@@ -44,14 +39,11 @@
                                 <td class="border border-gray-300 px-4 py-2" style="color: {{ $percentChange24h >= 0 ? 'green' : 'red' }};">
                                     {{ number_format($percentChange24h, 2) }}%
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $portfolio->amount }}</td>
+                                <td class="border border-gray-300 px-4 py-2">{{ number_format($coinBalance, 8) }}</td>
                                 <td class="border border-gray-300 px-4 py-2">
                                     {{ session('currency', 'USD') === 'USD' ? '$' : '¥' }}    
-                                    {{ number_format($price * $portfolio->amount, 2) }}
+                                    {{ number_format($price * $coinBalance, 2) }}
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">---</td> <!-- 平均購入価格 -->
-                                <td class="border border-gray-300 px-4 py-2">---</td> <!-- 損益 -->
-                                <td class="border border-gray-300 px-4 py-2">{{ $portfolio->updated_at }}</td>
                             </tr>
                         @endforeach
                     </tbody>

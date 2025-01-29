@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Swap;
 use App\Models\Send;
 use App\Models\Deposit;
+use App\Models\Change;
 use App\Http\Requests\SendRequest;
 use App\Http\Requests\DepositRequest;
 
@@ -77,14 +78,15 @@ class TransactionController extends Controller
         // 現在のユーザーを取得
         $user = Auth::user();
 
-        // 場所を取得
-        $places = DB::table('places')->where('user_id', $user->id)->pluck('place');
-
-        // ポートフォリオのコインを取得
-        $portfolioCoins = DB::table('portfolios')->where('user_id', $user->id)->pluck('coin');
+        // ユーザーの全changesを取得
+        $changes = DB::table('changes')->where('user_id', $user->id)->get();
+        // ユーザーの全changesのうち場所を取得し、重複を削除
+        $places = DB::table('changes')->where('user_id', $user->id)->pluck('place')->unique();
+        // ユーザーの全changesのうちcoinを取得し、重複を削除
+        $coins = DB::table('changes')->where('user_id', $user->id)->pluck('coin')->unique();
        
         // ビューにデータを渡す
-        return view('transaction.create', compact('places', 'portfolioCoins'));
+        return view('transaction.create', compact('places', 'coins'));
     }
 
     // スワップデータの保存
@@ -109,6 +111,7 @@ class TransactionController extends Controller
         // placeの値が「other」の場合、place_otherの値を使用
         $place = $request->input('place') === 'other' ? $request->input('place_other') : $request->input('place');
 
+        //swapsテーブルにスワップデータを保存
         DB::table('swaps')->insert([
             'user_id' => auth()->id(), // 現在ログイン中のユーザーID
             'place' => $place, // 取引所
@@ -123,6 +126,35 @@ class TransactionController extends Controller
             'created_at' => now(), // 作成日時
             'updated_at' => now(), // 更新日時
         ]);
+
+        //changesテーブルに残高変化を記録
+        // スワップのIDを取得(最後に挿入されたID)
+        $relatedId = DB::getPdo()->lastInsertId();   
+        // スワップ元の残高変化を記録
+        DB::table('changes')->insert([
+            'user_id' => auth()->id(),
+            'place' => $place,
+            'coin' => $coina,
+            'change' => -$validated['amounta'],
+            'related_type' => 'swaps',
+            'related_id' => $relatedId,
+            'customtime' => $validated['customtime'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // スワップ先の残高変化を記録
+        DB::table('changes')->insert([
+            'user_id' => auth()->id(),
+            'place' => $place,
+            'coin' => $coinb,
+            'change' => $validated['amountb'],
+            'related_type' => 'swaps',
+            'related_id' => $relatedId,
+            'customtime' => $validated['customtime'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         // 成功メッセージを表示してリダイレクト
         return redirect()->route('transaction.create')->with('success', 'スワップが記録されました！');
     }
@@ -151,6 +183,34 @@ class TransactionController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        // 送金のIDを取得(最後に挿入されたID)
+        $relatedId = DB::getPdo()->lastInsertId();
+        // 送金元の残高変化を記録
+        DB::table('changes')->insert([
+            'user_id' => auth()->id(),
+            'place' => $placea,
+            'coin' => $coin,
+            'change' => -$request['amounta'],
+            'related_type' => 'sends',
+            'related_id' => $relatedId,
+            'customtime' => $request['customtime'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        // 送金先の残高変化を記録
+        DB::table('changes')->insert([
+            'user_id' => auth()->id(),
+            'place' => $placeb,
+            'coin' => $coin,
+            'change' => $request['amountb'],
+            'related_type' => 'sends',
+            'related_id' => $relatedId,
+            'customtime' => $request['customtime'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         return redirect()->route('transaction.create')->with('success', '送金が記録されました！');
     }
 
@@ -173,6 +233,22 @@ class TransactionController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        // 振込のIDを取得(最後に挿入されたID)
+        $relatedId = DB::getPdo()->lastInsertId();
+        // 振込先の残高変化を記録
+        DB::table('changes')->insert([
+            'user_id' => auth()->id(),
+            'place' => $place,
+            'coin' => $coin,
+            'change' => $request['amount'],
+            'related_type' => 'deposits',
+            'related_id' => $relatedId,
+            'customtime' => $request['customtime'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        
         return redirect()->route('transaction.create')->with('success', '振込が記録されました！');
     }
   
