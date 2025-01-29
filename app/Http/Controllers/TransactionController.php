@@ -255,5 +255,36 @@ class TransactionController extends Controller
         
         return redirect()->route('transaction.create')->with('success', '振込が記録されました！');
     }
+
+    // スワップデータの削除
+    public function deleteSwap(Swap $swap)
+    {
+        // 関連するswapを削除
+        DB::table('swaps')->where('id', $swap->id)->delete();
+        // 関連するchangesを削除
+        DB::table('changes')->where('related_type', 'swaps')->where('related_id', $swap->id)->delete();
+        
+        return redirect()->route('transaction.index')->with('success', 'スワップが削除されました！');
+    }
+    // 送金データの削除
+    public function deleteSend(Send $send)
+    {
+        // 関連するsendを削除
+        DB::table('sends')->where('id', $send->id)->delete();
+        // 関連するchangesを削除
+        DB::table('changes')->where('related_type', 'sends')->where('related_id', $send->id)->delete();
+        
+        return redirect()->route('transaction.index')->with('success', '送金が削除されました！');
+    }
+    // 振込データの削除
+    public function deleteDeposit(Deposit $deposit)
+    {
+        // 関連するdepositを削除
+        DB::table('deposits')->where('id', $deposit->id)->delete();
+        // 関連するchangesを削除
+        DB::table('changes')->where('related_type', 'deposits')->where('related_id', $deposit->id)->delete();
+        
+        return redirect()->route('transaction.index')->with('success', '振込が削除されました！');
+    }
   
 }

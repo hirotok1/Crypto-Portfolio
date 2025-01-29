@@ -39,7 +39,9 @@
                                 <td class="border border-gray-300 px-4 py-2" style="color: {{ $percentChange24h >= 0 ? 'green' : 'red' }};">
                                     {{ number_format($percentChange24h, 2) }}%
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">{{ number_format($coinBalance, 8) }}</td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    {{ rtrim(rtrim(number_format($coinBalance, 8), '0'), '.') }}
+                                </td>
                                 <td class="border border-gray-300 px-4 py-2">
                                     {{ session('currency', 'USD') === 'USD' ? '$' : '¥' }}    
                                     {{ number_format($price * $coinBalance, 2) }}

@@ -25,6 +25,10 @@ Route::post('/transaction/swap', [TransactionController::class, 'storeSwap'])->n
 Route::post('/transaction/send', [TransactionController::class, 'storeSend'])->name('transaction.storeSend');
 Route::post('/transaction/deposit', [TransactionController::class, 'storeDeposit'])->name('transaction.storeDeposit');
 
+Route::delete('/transaction/delete-swap/{swap}', [TransactionController::class, 'deleteSwap'])->name('transaction.deleteSwap');
+Route::delete('/transaction/delete-send/{send}', [TransactionController::class, 'deleteSend'])->name('transaction.deleteSend');
+Route::delete('/transaction/delete-deposit/{deposit}', [TransactionController::class, 'deleteDeposit'])->name('transaction.deleteDeposit');
+
 Route::get('/set-currency/{currency}', function ($currency) {
     session(['currency' => $currency]);
     return redirect()->back();

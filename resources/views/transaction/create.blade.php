@@ -53,7 +53,7 @@
                             <option value="other">新しいコインを追加</option>
                         </select>
                         <input type="text" id="coina_other" name="coina_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
-                        <input type="number" name="amounta" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
+                        <input type="number" name="amounta" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量" step=any>
                     </div>
                     <!-- スワップ先 -->
                     <div>
@@ -66,7 +66,7 @@
                             <option value="other">新しいコインを追加</option>        
                         </select>
                         <input type="text" id="coinb_other" name="coinb_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
-                        <input type="number" name="amountb" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
+                        <input type="number" name="amountb" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量" step=any>
                     </div>
                 </div>
                 <!-- 手数料 -->
@@ -80,7 +80,7 @@
                         </div>
                         <div>
                             <input type="text" name="customfeecoin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm" placeholder="コイン名 (例: JPY)">
-                            <input type="number" name="customfee" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="手数料">
+                            <input type="number" name="customfee" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="手数料" step=any>
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                             <option value="other">新しい場所を追加</option>
                         </select>
                         <input type="text" id="placea_other" name="placea_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しい場所名を入力" style="display: none;">
-                        <input type="number" name="amounta" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
+                        <input type="number" name="amounta" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量" step=any>
                     </div>
                     <!-- 送金先 -->
                     <div>
@@ -145,7 +145,7 @@
                             <option value="other">新しい場所を追加</option>        
                         </select>
                         <input type="text" id="placeb_other" name="placeb_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しい場所名を入力" style="display: none;">
-                        <input type="number" name="amountb" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
+                        <input type="number" name="amountb" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量" step=any>
                     </div>
                 </div>
                 <!-- 手数料 -->
@@ -159,7 +159,7 @@
                         </div>
                         <div>
                             <input type="text" name="customfeecoin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm" placeholder="コイン名 (例: JPY)">
-                            <input type="number" name="customfee" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="手数料">
+                            <input type="number" name="customfee" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="手数料" step=any>
                         </div>
                     </div>
                 </div>
@@ -211,7 +211,7 @@
                             <option value="other">新しいコインを追加</option>        
                         </select>
                         <input type="text" id="deposit_coin_other" name="coin_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しいコイン名を入力" style="display: none;">
-                        <input type="number" name="amount" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量">
+                        <input type="number" name="amount" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="数量" step=any>
                     </div>
                 </div>
                 <!-- 日時 -->
