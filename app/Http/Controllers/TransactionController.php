@@ -27,7 +27,7 @@ class TransactionController extends Controller
         $deposits = DB::table('deposits')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
         // ユーザーの全changesを取得
         $changes = DB::table('changes')->where('user_id', $user->id)->get();
-
+        /*
         // changesが空の場合、logosを空にして処理をスキップ
         if ($changes->isEmpty()) {
             $logos = collect();
@@ -69,11 +69,12 @@ class TransactionController extends Controller
                 return [$item['symbol'] => $item['logo']];
             });
         }
+        */
         return view('transaction.index', [
             'swaps' => $swaps,
             'sends' => $sends,
             'deposits' => $deposits,
-            'logos' => $logos,
+            //'logos' => $logos,
         ]);
     }
 
