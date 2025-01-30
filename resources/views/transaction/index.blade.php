@@ -238,26 +238,38 @@
         }
         <!-- 送金削除モーダル表示用 -->
         function showDeleteSendModal(id) {
-            document.getElementById('delete-send-form').action = '/transaction/delete-send/' + id;
-            document.getElementById('delete-send-modal').classList.remove('hidden');
+            console.log('showDeleteSendModal called with id:', id);
+            
+            let modal=document.getElementById('delete-send-modal');
+            let form=document.getElementById('delete-send-form');
+
+            console.log('modal:', modal);
+            console.log('form:', form);
+
+            if (!modal || !form) {
+                console.error('モーダルまたはフォームが見つかりません)');
+                return;
+            }
+            form.action = '/transaction/delete-send/' + id;
+            modal.classList.remove('hidden');
+
+            console.log('モーダル表示！');
         }
         <!-- 送金削除モーダル非表示用 -->
         function hideDeleteSendModal() {
-            document.getElementById('delete-send-modal').classList.add('hidden');
+            let modal=document.getElementById('delete-send-modal');
+            modal.classList.add('hidden');
         }
         <!-- 振込削除モーダル表示用 -->
         function showDeleteDepositModal(id) {
-            document.addEventListener('DOMContentLoaded', function () {
-                console.log('Page fully loaded');
-                document.getElementById('delete-deposit-form').action = '/transaction/delete-deposit/' + id;
-                document.getElementById('delete-deposit-modal').classList.remove('hidden');
-            });
+            document.getElementById('delete-deposit-form').action = '/transaction/delete-deposit/' + id;
+            document.getElementById('delete-deposit-modal').classList.remove('hidden');
         }
         <!-- 振込削除モーダル非表示用 -->
         function hideDeleteDepositModal() {
             document.getElementById('delete-deposit-modal').classList.add('hidden');
         }
-
+        
         document.addEventListener('DOMContentLoaded', function () {
             console.log('JavaScript is loaded correctly in index.blade.php');
 
