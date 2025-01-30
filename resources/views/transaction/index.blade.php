@@ -259,6 +259,8 @@
 
             // 確認用
             console.log(document.getElementById('delete-swap-modal')); // null ならJSのロード前にDOMを参照している
+            console.log(document.getElementById('delete-send-modal')); // null ならJSのロード前にDOMを参照している  
+            console.log(document.getElementById('delete-deposit-modal')); // null ならJSのロード前にDOMを参照している
         });
 
     </script>
