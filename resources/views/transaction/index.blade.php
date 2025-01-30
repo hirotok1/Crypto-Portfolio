@@ -247,13 +247,17 @@
         }
         <!-- 振込削除モーダル表示用 -->
         function showDeleteDepositModal(id) {
-            document.getElementById('delete-deposit-form').action = '/transaction/delete-deposit/' + id;
-            document.getElementById('delete-deposit-modal').classList.remove('hidden');
+            document.addEventListener('DOMContentLoaded', function () {
+                console.log('Page fully loaded');
+                document.getElementById('delete-deposit-form').action = '/transaction/delete-deposit/' + id;
+                document.getElementById('delete-deposit-modal').classList.remove('hidden');
+            });
         }
         <!-- 振込削除モーダル非表示用 -->
         function hideDeleteDepositModal() {
             document.getElementById('delete-deposit-modal').classList.add('hidden');
         }
+
         document.addEventListener('DOMContentLoaded', function () {
             console.log('JavaScript is loaded correctly in index.blade.php');
 
