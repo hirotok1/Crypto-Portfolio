@@ -27,7 +27,7 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:-my-px sm:ms-10 sm:flex">
                 
                 <x-nav-link :href="route('transaction.create')">
                     {{ __('+ トランザクション') }}
@@ -37,7 +37,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ session('currency', 'USD') }}</div>
+                            <div>{{ session('currency', 'JPY') }}</div>
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -45,13 +45,12 @@
                             </div>
                         </button>
                     </x-slot>
-
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('set.currency', 'USD')">
-                            {{ __('USD') }}
-                        </x-dropdown-link>
                         <x-dropdown-link :href="route('set.currency', 'JPY')">
                             {{ __('JPY') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('set.currency', 'USD')">
+                            {{ __('USD') }}
                         </x-dropdown-link>
                         <x-dropdown-link :href="route('set.currency', 'BTC')">
                             {{ __('BTC') }}
@@ -59,12 +58,16 @@
                     </x-slot>
                 </x-dropdown>
 
-                <!-- Add Transaction Button -->
+                <!-- ユーザー -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
+                            <div>
+                                <svg class="h-6 w-6 text-zinc-400"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                {{ Auth::user()->name }}
+                            </div>
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -85,7 +88,11 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                <span class="flex justify-between w-full">
+                                    <span>{{ __('Log Out') }}</span>
+                                    <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />  <path d="M7 12h14l-3 -3m0 6l3 -3" />
+                                    </svg>
+                                </span>
                             </x-dropdown-link>
                         </form>
                     </x-slot>

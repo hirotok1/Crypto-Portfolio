@@ -20,7 +20,7 @@ class PortfolioController extends Controller
         $client = new Client();
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 
-        $currency = session('currency', 'USD'); // デフォルト通貨は USD
+        $currency = session('currency', 'JPY'); // デフォルト通貨は JPY
         $response = $client->get($url, [
             'headers' => [
                 'X-CMC_PRO_API_KEY' => config('services.coinmarketcap.api_key'),

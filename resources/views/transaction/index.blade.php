@@ -25,7 +25,7 @@
                                     <th>スワップ</th>
                                     <th>手数料</th>
                                     <th class="w-1/4">メモ</th>
-                                    <th>操作</th>
+                                    <th></th>
                                     
                                 </tr>
                             </thead>
@@ -47,7 +47,7 @@
                                         <td class="break-words">{{ $swap->memo }}</td>
                                         <td>
                                             <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $swap->id }})">
-                                                削除
+                                                <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </td>
                                     </tr>
@@ -68,7 +68,7 @@
                                     <th>送金先</th><!--送金先場所と枚数-->
                                     <th>その他手数料</th>
                                     <th class="w-1/4">メモ</th>
-                                    <th>操作</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,7 +89,7 @@
                                         <td class="break-words">{{ $send->memo }}</td>
                                         <td>
                                             <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $send->id }})">
-                                                削除
+                                               <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </td>
                                     </tr>
@@ -106,7 +106,7 @@
                                     <th>場所</th>
                                     <th>コイン</th>
                                     <th class="w-1/4">メモ</th>
-                                    <th>操作</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -118,7 +118,7 @@
                                         <td class="break-words">{{ $deposit->memo }}</td>
                                         <td>
                                             <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }})">
-                                                削除
+                                                <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </td>
                                     </tr>
@@ -134,7 +134,14 @@
     <!-- スワップ削除確認モーダル -->
     <div id="delete-swap-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
-            <p class="text-center">本当に削除しますか？</p>
+            <p class="text-center font-bold">本当に削除しますか？</p>
+        
+            <!--削除する送金の情報を表示-->
+            <p class="text-center">{{ $swap->customtime }}<br>
+                {{ $swap->place }}でスワップ
+                {{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}{{ $swap->coina }}→
+                {{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}{{ $swap->coinb }}
+            </p>
             <div class="flex justify-center mt-4">
                 <button id="cancel-delete-swap-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteSwapModal()">キャンセル</button>
                 <form id="delete-swap-form" method="POST" action="">
@@ -146,10 +153,16 @@
                 </form>
             </div>
         </div>
+    </div>
     <!-- 送金削除確認モーダル -->
     <div id="delete-send-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
-            <p class="text-center">本当に削除しますか？</p>
+            <p class="text-center font-bold">本当に削除しますか？</p>
+            <!--削除する送金の情報を表示-->
+            <p class="text-center">{{ $send->customtime }}</p>
+            <p class="text-center">{{ $send->placea }}→{{ $send->placeb }}
+            {{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}{{ $send->coin }}送金</p>
+           
             <div class="flex justify-center mt-4">
                 <button id="cancel-delete-send-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteSendModal()">キャンセル</button>
                 <form id="delete-send-form" method="POST" action="">
@@ -161,10 +174,17 @@
                 </form>
             </div>
         </div>
+    </div>
     <!-- 振込削除確認モーダル -->
     <div id="delete-deposit-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
-            <p class="text-center">本当に削除しますか？</p>
+            <p class="text-center font-bold">本当に削除しますか？</p>
+         
+            <!--削除する送金の情報を表示-->
+            <p class="text-center">{{ $deposit->customtime }}<br>
+                {{ $deposit->place }}に
+                {{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}振込
+            </p>
             <div class="flex justify-center mt-4">
                 <button id="cancel-delete-deposit-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteDepositModal()">キャンセル</button>
                 <form id="delete-deposit-form" method="POST" action="">
@@ -220,13 +240,6 @@
             document.getElementById('deposit-table').classList.remove('hidden');
         });
 
-        function confirmDelete(event) {
-            event.preventDefault();
-            if(confirm('本当に削除しますか？')) {
-                event.target.submit();
-            }
-        }
-
         <!-- スワップ削除モーダル表示用 -->
         function showDeleteSwapModal(id) {
             document.getElementById('delete-swap-form').action = '/transaction/delete-swap/' + id;
@@ -270,14 +283,5 @@
             document.getElementById('delete-deposit-modal').classList.add('hidden');
         }
         
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('JavaScript is loaded correctly in index.blade.php');
-
-            // 確認用
-            console.log(document.getElementById('delete-swap-modal')); // null ならJSのロード前にDOMを参照している
-            console.log(document.getElementById('delete-send-modal')); // null ならJSのロード前にDOMを参照している  
-            console.log(document.getElementById('delete-deposit-modal')); // null ならJSのロード前にDOMを参照している
-        });
-
     </script>
 </x-app-layout>

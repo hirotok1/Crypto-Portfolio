@@ -30,7 +30,7 @@
                             <tr>
                                 <td class="border border-gray-300 px-4 py-2">{{ $coin }}</td>
                                 <td class="border border-gray-300 px-4 py-2">
-                                    {{ session('currency', 'USD') === 'USD' ? '$' : '¥' }}
+                                    {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}
                                     {{ number_format($price, 2) }}
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2" style="color: {{ $percentChange1h >= 0 ? 'green' : 'red' }};">
@@ -43,7 +43,7 @@
                                     {{ rtrim(rtrim(number_format($coinBalance, 8), '0'), '.') }}
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2">
-                                    {{ session('currency', 'USD') === 'USD' ? '$' : '¥' }}    
+                                    {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}    
                                     {{ number_format($price * $coinBalance, 2) }}
                                 </td>
                             </tr>

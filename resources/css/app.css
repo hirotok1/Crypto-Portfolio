@@ -2,9 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
 button[type="submit"] {
-    background-color: #2563eb !important; /* 青色 */
-    color: white !important; /* 文字色を白 */
+    background-color: #2563eb !important; 
+    color: white !important; 
     border: none !important;
     padding: 10px 20px !important;
     font-size: 16px !important;
@@ -15,13 +16,14 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #1d4ed8 !important; /* 濃い青 */
+    background-color: #1d4ed8 !important; 
 }
 
 button[type="submit"]:focus {
     outline: none !important;
     ring: 2px solid #1d4ed8 !important;
 }
+*/
 
 .break-words {
     word-wrap: break-word;
@@ -30,3 +32,6 @@ button[type="submit"]:focus {
     white-space: pre-wrap; /* 改行を許可 */
 }
 
+.currency-dropdown {
+    top: 12px !important;
+}
