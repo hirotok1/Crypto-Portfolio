@@ -43,7 +43,13 @@ class PortfolioController extends Controller
                 ]
             ];
         });
-
+        // JPYのデータを追加
+        $coinData['JPY'] = [
+            'price' => 1,
+            'percent_change_1h' => 0,
+            'percent_change_24h' => 0,
+        ];
+        
         // ユーザーの全changesを取得
         $changes = DB::table('changes')->where('user_id', $user->id)->get();
         // ユーザーの全changesのうちコインごとに集計
@@ -56,12 +62,25 @@ class PortfolioController extends Controller
                 return $group->sum('change');
             });
         });
+        // 各コインが存在する場所を準備
+        $coinPlaces = $changes->groupBy('coin')->map(function ($group) {
+            return $group->pluck('place')->unique();
+        });
+        // 総資産を計算
+        $totalAssets = $coinBalance->reduce(function ($carry, $balance, $coin) use ($coinData) {
+            $price = $coinData[$coin]['price'] ?? 0;
+            return $carry + ($price * $balance);
+        }, 0);
+
         // ビューにデータを渡す
         return view('portfolio', [
             'portfolios' => $portfolios,
             'coinData' => $coinData,
+            'changes' => $changes,
             'coinBalance' => $coinBalance,
             'placeBalance' => $placeBalance,
+            'coinPlaces' => $coinPlaces,
+            'totalAssets' => $totalAssets,
         ]);
     
     }

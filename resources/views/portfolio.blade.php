@@ -1,13 +1,19 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('ポートフォリオ') }}
-        </h2>
-    </x-slot>
+    <!-- ヘッダーのスタイルを非表示にする -->
+    <style>
+        header.bg-white.shadow {
+            display: none; /* ヘッダー全体を非表示 */
+        }
+    </style>
+    
     <div class="flex justify-center mt-6">
     <div class="py-4>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <!-- 総資産の表示 -->
+                <div class="mb-4">
+                    <h2 class="text-lg font-semibold">総資産 {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}{{ number_format($totalAssets, 2) }}</h2>
+                </div>
                 <table class="border-collapse border border-gray-200 w-11/12 text-center">
                     <thead>
                         <tr>
@@ -17,6 +23,7 @@
                             <th class="border border-gray-300 px-4 py-2">24h%</th>
                             <th class="border border-gray-300 px-4 py-2">保有枚数</th>
                             <th class="border border-gray-300 px-4 py-2">保有額</th>
+                            <th class="border border-gray-300 px-4 py-2">内訳</th>
                         </tr>
                     </thead>
                     <!-- coinBalanceはポートフォリオの保有枚数 -->
@@ -46,10 +53,30 @@
                                     {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}    
                                     {{ number_format($price * $coinBalance, 2) }}
                                 </td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    @foreach ($coinPlaces[$coin] as $place)
+                                        {{ $place }}:{{ $placeBalance[$place][$coin] }}{{ $coin }}<br>
+                                    @endforeach
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- 場所ごとのコインと枚数 -->
+                <div class="mt-6">
+                    <h2 class="text-lg font-semibold mb-4">場所ごとのコインと枚数</h2>
+                    @foreach ($placeBalance as $place => $coins)
+                        <div class="mb-4">
+                            <h3 class="text-md font-semibold">{{ $place }}</h3>
+                            <ul class="list-disc list-inside">
+                                @foreach ($coins as $coin => $amount)
+                                    <li>{{ $coin }}: {{ rtrim(rtrim(number_format($amount, 8), '0'), '.') }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>

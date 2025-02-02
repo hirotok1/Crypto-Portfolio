@@ -28,11 +28,9 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:-my-px sm:ms-10 sm:flex">
-                
                 <x-nav-link :href="route('transaction.create')">
                     {{ __('+ トランザクション') }}
                 </x-nav-link>
-
                 <!-- 基準通貨のドロップダウン -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">

@@ -16,7 +16,7 @@ class MarketController extends Controller
         $currency = session('currency', 'USD'); // デフォルトは USD
         $params = [
             'start' => 1,
-            'limit' => 20,
+            'limit' => 100,
             'convert' => $currency, // 選択した通貨を使用
         ];
         $response = $client->get($url, [
