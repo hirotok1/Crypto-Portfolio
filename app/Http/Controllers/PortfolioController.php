@@ -12,26 +12,23 @@ class PortfolioController extends Controller
 {
     public function index()
     { 
+        $apiKey=config('services.coinmarketcap.api_key');
         $user = Auth::user();
-        // portfolios テーブルのデータを取得
-        $portfolios = Portfolio::where('user_id', $user->id)->get();
-        
         // コインの価格データを取得
         $client = new Client();
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
-
         $currency = session('currency', 'JPY'); // デフォルト通貨は JPY
         $response = $client->get($url, [
             'headers' => [
-                'X-CMC_PRO_API_KEY' => config('services.coinmarketcap.api_key'),
+                'X-CMC_PRO_API_KEY' => $apiKey,
             ],
             'query' => [
                 'start' => 1,
-                'limit' => 1000,
+                'limit' => 500,
                 'convert' => $currency,
             ],
         ]);
-
+        // レスポンスをJSONとして取得し、配列に変換
         $marketData = json_decode($response->getBody()->getContents(), true);
         // 必要なデータ（価格と変動率）を収集
         $coinData = collect($marketData['data'])->mapWithKeys(function ($item) use ($currency) {
@@ -71,16 +68,47 @@ class PortfolioController extends Controller
             $price = $coinData[$coin]['price'] ?? 0;
             return $carry + ($price * $balance);
         }, 0);
-
+        // 円グラフに渡すデータを用意
+        $chartData = [];
+        foreach ($coinBalance as $coin => $balance) {
+            $totalValue = $balance * ($coinData[$coin]['price'] ?? 0);
+            $chartData[] = [
+                'label' => $coin,
+                'value' => $totalValue,
+            ];
+        }
+        //dd($apiKey);//きてる
+        //dd($marketData);//きてる
+        // ロゴ表示
+        // ロゴ情報を取得するための通貨IDのリストを作成。BTC:1,LTC:2,etc.時価総額順位とは異なる！のでわざわざidリスト作んないといけない。
+        $ids = collect($marketData['data'])->pluck('id')->implode(',');
+        //dd($ids);//きてる
+        // ロゴ取得のためのリクエスト
+        $client = new Client();
+        $infoUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
+        $infoResponse = $client->get($infoUrl, [
+            'headers' => [
+                'X-CMC_PRO_API_KEY' => $apiKey,
+            ],
+            'query' => ['id' => $ids],
+        ]);
+        //dd($apiKey);
+        //dd($infoResponse->getStatusCode());
+        //dd($infoResponse);//ない
+        $logoData = json_decode($infoResponse->getBody()->getContents(), true);
+        //dd($logoData);//ない
+        
         // ビューにデータを渡す
         return view('portfolio', [
-            'portfolios' => $portfolios,
             'coinData' => $coinData,
             'changes' => $changes,
             'coinBalance' => $coinBalance,
             'placeBalance' => $placeBalance,
             'coinPlaces' => $coinPlaces,
             'totalAssets' => $totalAssets,
+            'chartData' => $chartData,
+            'logos' => collect($logoData['data']),
+
         ]);
     
     }

@@ -11,8 +11,6 @@ class MarketController extends Controller
     {
         $client = new Client();
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
-        
-        
         $currency = session('currency', 'USD'); // デフォルトは USD
         $params = [
             'start' => 1,
@@ -25,12 +23,11 @@ class MarketController extends Controller
             ],
             'query' => $params,
         ]);
-
-         // レスポンスをJSONとして取得し、配列に変換
+        // レスポンスをJSONとして取得し、配列に変換
         $marketData = json_decode($response->getBody()->getContents(), true);
-        // ロゴ情報を取得するための通貨IDのリストを作成
+        
+        // ロゴ情報を取得するための通貨IDのリストを作成。BTC:1,LTC:2,etc.時価総額順位とは異なる！のでわざわざidリスト作んないといけない。
         $ids = collect($marketData['data'])->pluck('id')->implode(',');
-
         // ロゴ取得のためのリクエスト
         $infoUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
         $infoResponse = $client->get($infoUrl, [
@@ -39,8 +36,8 @@ class MarketController extends Controller
             ],
             'query' => ['id' => $ids],
         ]);
+        //dd(config('services.coinmarketcap.api_key'));//"245b4ca3-0551-4981-9e6d-351454194f4b"
         $logoData = json_decode($infoResponse->getBody()->getContents(), true);
-
         // ロゴデータをビューに渡す
         return view('market', [
             'data' => $marketData,
