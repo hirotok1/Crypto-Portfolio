@@ -41,9 +41,14 @@
                                 $price = $coinData[$coin]['price'] ?? 0;
                                 $percentChange1h = $coinData[$coin]['percent_change_1h'] ?? 0;
                                 $percentChange24h = $coinData[$coin]['percent_change_24h'] ?? 0;
+                                $coinId = $coinIdMap[$coin] ?? null;
+                                $logoUrl = $coinId ? ($logos[$coinId]['logo'] ?? '') : '';
                             @endphp
                             <tr>
                                 <td class="border border-gray-300 px-4 py-2 text-center">
+                                @if ($logoUrl)
+                                    <img src="{{ $logoUrl }}" alt="{{ $coin }}" width="24" height="24">
+                                @endif
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $coin }}</td>
                                 <td class="border border-gray-300 px-4 py-2">

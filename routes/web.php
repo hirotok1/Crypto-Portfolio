@@ -14,9 +14,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/market', [MarketController::class, 'index'])->name('market');
-
-Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio');
+Route::middleware(['auth'])->group(function(){
+    Route::get('/market', [MarketController::class, 'index'])->name('market');
+    Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio');
+});
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/transaction/index', [TransactionController::class, 'index'])->name('transaction.index');

@@ -24,12 +24,13 @@ class PortfolioController extends Controller
             ],
             'query' => [
                 'start' => 1,
-                'limit' => 500,
+                'limit' => 1000,
                 'convert' => $currency,
             ],
         ]);
         // レスポンスをJSONとして取得し、配列に変換
         $marketData = json_decode($response->getBody()->getContents(), true);
+        //dd($marketData);
         // 必要なデータ（価格と変動率）を収集
         $coinData = collect($marketData['data'])->mapWithKeys(function ($item) use ($currency) {
             return [
@@ -81,7 +82,13 @@ class PortfolioController extends Controller
         //dd($marketData);//きてる
         // ロゴ表示
         // ロゴ情報を取得するための通貨IDのリストを作成。BTC:1,LTC:2,etc.時価総額順位とは異なる！のでわざわざidリスト作んないといけない。
-        $ids = collect($marketData['data'])->pluck('id')->implode(',');
+        $coinIdMap = collect($marketData['data'])->mapWithKeys(function ($item) {
+            return [$item['symbol'] => $item['id']];
+        });
+        //dd($coinIdMap);
+        $ids = $coinBalance->keys()->map(function ($coin) use ($coinIdMap) {
+            return $coinIdMap[$coin] ?? null;
+        })->filter()->implode(',');
         //dd($ids);//きてる
         // ロゴ取得のためのリクエスト
         $client = new Client();
@@ -97,7 +104,10 @@ class PortfolioController extends Controller
         //dd($infoResponse);//ない
         $logoData = json_decode($infoResponse->getBody()->getContents(), true);
         //dd($logoData);//ない
-        
+        $logos = collect($logoData['data'])->mapWithKeys(function ($item) {
+            return [$item['id'] => ['logo' => $item['logo']]];
+        });
+        //dd($logos);
         // ビューにデータを渡す
         return view('portfolio', [
             'coinData' => $coinData,
@@ -107,8 +117,9 @@ class PortfolioController extends Controller
             'coinPlaces' => $coinPlaces,
             'totalAssets' => $totalAssets,
             'chartData' => $chartData,
-            'logos' => collect($logoData['data']),
-
+            'logos' => $logos,
+            'data' => $marketData,
+            'coinIdMap' => $coinIdMap,
         ]);
     
     }
