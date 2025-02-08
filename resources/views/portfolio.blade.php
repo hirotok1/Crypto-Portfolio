@@ -46,9 +46,9 @@
                             @endphp
                             <tr>
                                 <td class="border border-gray-300 px-4 py-2 text-center">
-                                @if ($logoUrl)
-                                    <img src="{{ $logoUrl }}" alt="{{ $coin }}" width="24" height="24">
-                                @endif
+                                    @if ($logoUrl)
+                                        <img src="{{ $logoUrl }}" alt="{{ $coin }}" width="24" height="24">
+                                    @endif
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $coin }}</td>
                                 <td class="border border-gray-300 px-4 py-2">
