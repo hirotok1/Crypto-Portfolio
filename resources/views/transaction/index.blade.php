@@ -37,16 +37,14 @@
                                         <td>
                                             {{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}
                                             {{ $swap->coina }}
-                                            <!--<img src="{{ $logos[$swap->coina] ?? '' }}" alt="{{ $swap->coina }}" width="32" height="32">-->
                                             →
                                             {{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}
                                             {{ $swap->coinb }}
-                                            <!--<img src="{{ $logos[$swap->coinb] ?? '' }}" alt="{{ $swap->coinb }}" width="32" height="32">-->
                                         </td>
                                         <td>{{ rtrim(rtrim(number_format($swap->customfee, 8), '0'), '.') }}{{ $swap->customfeecoin }}</td>
                                         <td class="break-words">{{ $swap->memo }}</td>
                                         <td>
-                                            <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $swap->id }}, '{{ $swap->customtime }}', '{{ $swap->place }}', '{{ $swap->amounta }}', '{{ $swap->coina }}', '{{ $swap->amountb }}', '{{ $swap->coinb }}')">
+                                            <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $swap->id }}, '{{ $swap->customtime }}', '{{ $swap->place }}', '{{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}', '{{ $swap->coina }}', '{{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}', '{{ $swap->coinb }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </td>
@@ -88,7 +86,7 @@
                                         </td>
                                         <td class="break-words">{{ $send->memo }}</td>
                                         <td>
-                                            <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $send->id }}, '{{ $send->customtime }}', '{{ $send->placea }}', '{{ $send->placeb }}', '{{ $send->amounta }}', '{{ $send->amountb }}', '{{ $send->coin }}')">
+                                            <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $send->id }}, '{{ $send->customtime }}', '{{ $send->placea }}', '{{ $send->placeb }}', '{{ rtrim(rtrim(number_format($send->amounta, 8), '0'), '.') }}', '{{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}', '{{ $send->coin }}')">
                                                <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </td>
@@ -117,7 +115,7 @@
                                         <td>{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}</td>
                                         <td class="break-words">{{ $deposit->memo }}</td>
                                         <td>
-                                            <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }}, '{{ $deposit->customtime }}', '{{ $deposit->place }}', '{{ $deposit->amount }}', '{{ $deposit->coin }}')">
+                                            <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }}, '{{ $deposit->customtime }}', '{{ $deposit->place }}', '{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}', '{{ $deposit->coin }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </td>
@@ -137,13 +135,6 @@
             <p class="text-center font-bold">本当に削除しますか？</p>
         
             <!--削除する送金の情報を表示-->
-            <!--
-            <p class="text-center">{{ $swap->customtime }}<br>
-                {{ $swap->place }}でスワップ
-                {{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}{{ $swap->coina }}→
-                {{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}{{ $swap->coinb }}
-            </p>
-            -->
             <p id="swap-info" class="text-center"></p>
             <div class="flex justify-center mt-4">
                 <button id="cancel-delete-swap-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteSwapModal()">キャンセル</button>
@@ -162,11 +153,6 @@
         <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
             <p class="text-center font-bold">本当に削除しますか？</p>
             <!--削除する送金の情報を表示-->
-            <!--
-            <p class="text-center">{{ $send->customtime }}</p>
-            <p class="text-center">{{ $send->placea }}→{{ $send->placeb }}
-            {{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}{{ $send->coin }}送金</p>
-            -->
             <p id="send-info" class="text-center"></p>
             <div class="flex justify-center mt-4">
                 <button id="cancel-delete-send-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteSendModal()">キャンセル</button>
@@ -185,12 +171,6 @@
         <div class="bg-white w-1/3 mx-auto mt-24 p-4 rounded-lg border border-gray-300">
             <p class="text-center font-bold">本当に削除しますか？</p>
             <!--削除する送金の情報を表示-->
-            <!--
-            <p class="text-center">{{ $deposit->customtime }}<br>
-                {{ $deposit->place }}に
-                {{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}振込
-            </p>
-            -->
             <p id="deposit-info" class="text-center"></p>
             <div class="flex justify-center mt-4">
                 <button id="cancel-delete-deposit-button" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition" onclick="hideDeleteDepositModal()">キャンセル</button>
@@ -260,7 +240,7 @@
         <!-- 送金削除モーダル表示用 -->
         function showDeleteSendModal(id, customtime, placea, placeb, amounta, amountb, coin) {
             document.getElementById('delete-send-form').action = '/transaction/delete-send/' + id;
-            document.getElementById('send-info').innerHTML = customtime + '<br>' + placea + '<br>' + amounta + ' ' + coin;
+            document.getElementById('send-info').innerHTML = customtime + '<br>' + placea + '→' + placeb + '<br>' + amounta + ' ' + coin;
             document.getElementById('delete-send-modal').classList.remove('hidden');
         }
         <!-- 送金削除モーダル非表示用 -->
