@@ -91,22 +91,26 @@ class PortfolioController extends Controller
         })->filter()->implode(',');
         //dd($ids);//きてる
         // ロゴ取得のためのリクエスト
-        $client = new Client();
-        $infoUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
-        $infoResponse = $client->get($infoUrl, [
-            'headers' => [
-                'X-CMC_PRO_API_KEY' => $apiKey,
-            ],
-            'query' => ['id' => $ids],
-        ]);
-        //dd($apiKey);
-        //dd($infoResponse->getStatusCode());
-        //dd($infoResponse);//ない
-        $logoData = json_decode($infoResponse->getBody()->getContents(), true);
-        //dd($logoData);//ない
-        $logos = collect($logoData['data'])->mapWithKeys(function ($item) {
-            return [$item['id'] => ['logo' => $item['logo']]];
-        });
+        if (empty($ids)) {
+            $logos=[];
+        } else {
+            $client = new Client();
+            $infoUrl = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
+            $infoResponse = $client->get($infoUrl, [
+                'headers' => [
+                    'X-CMC_PRO_API_KEY' => $apiKey,
+                ],
+                'query' => ['id' => $ids],
+            ]);
+            //dd($apiKey);
+            //dd($infoResponse->getStatusCode());
+            //dd($infoResponse);//ない
+            $logoData = json_decode($infoResponse->getBody()->getContents(), true);
+            //dd($logoData);//ない
+            $logos = collect($logoData['data'])->mapWithKeys(function ($item) {
+                return [$item['id'] => ['logo' => $item['logo']]];
+            });
+        }
         //dd($logos);
         // ビューにデータを渡す
         return view('portfolio', [

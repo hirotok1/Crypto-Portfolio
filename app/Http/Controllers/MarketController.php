@@ -11,7 +11,7 @@ class MarketController extends Controller
     {
         $client = new Client();
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
-        $currency = session('currency', 'USD'); // デフォルトは USD
+        $currency = session('currency', 'JPY'); // デフォルトは JPY
         $params = [
             'start' => 1,
             'limit' => 100,

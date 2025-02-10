@@ -20,30 +20,29 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>日時</th>
-                                    <th>取引所</th>
-                                    <th>スワップ</th>
-                                    <th>手数料</th>
-                                    <th class="w-1/4">メモ</th>
-                                    <th></th>
-                                    
+                                    <th class="w-1/5 px-4 py-2">日時</th>
+                                    <th class="w-1/5 px-4 py-2">取引所</th>
+                                    <th class="w-1/5 px-4 py-2">スワップ</th>
+                                    <th class="w-1/5 px-4 py-2">手数料</th>
+                                    <th class="w-1/5 px-4 py-2">メモ</th>
+                                    <th class="w-1/5 px-4 py-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($swaps as $index => $swap)
                                     <tr>
-                                        <td>{{ $swap->customtime }}</td>
-                                        <td>{{ $swap->place }}</td>
-                                        <td>
+                                        <td class="w-1/5 px-4 py-2">{{ $swap->customtime }}</td>
+                                        <td class="w-1/5 px-4 py-2">{{ $swap->place }}</td>
+                                        <td class="w-1/5 px-4 py-2">
                                             {{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}
                                             {{ $swap->coina }}
                                             →
                                             {{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}
                                             {{ $swap->coinb }}
                                         </td>
-                                        <td>{{ rtrim(rtrim(number_format($swap->customfee, 8), '0'), '.') }}{{ $swap->customfeecoin }}</td>
-                                        <td class="break-words">{{ $swap->memo }}</td>
-                                        <td>
+                                        <td class="w-1/5 px-4 py-2">{{ rtrim(rtrim(number_format($swap->customfee, 8), '0'), '.') }}{{ $swap->customfeecoin }}</td>
+                                        <td class="w-1/5 px-4 py-2 break-words">{{ $swap->memo }}</td>
+                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $swap->id }}, '{{ $swap->customtime }}', '{{ $swap->place }}', '{{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}', '{{ $swap->coina }}', '{{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}', '{{ $swap->coinb }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
@@ -54,38 +53,36 @@
                         </table>
                     </div>
                     <!-- 送金テーブル -->
-                    <div id="send-table" class="hidden">
-                        
-
+                    <div id="send-table" class="hidden">                        
                         <table>
                             <thead>
                                 <tr>
-                                    <th>日時</th>
-                                    <th>コイン</th>
-                                    <th>送金元</th><!--送金元場所と枚数-->
-                                    <th>送金先</th><!--送金先場所と枚数-->
-                                    <th>その他手数料</th>
-                                    <th class="w-1/4">メモ</th>
-                                    <th></th>
+                                    <th class="w-1/5 px-4 py-2">日時</th>
+                                    <th class="w-1/5 px-4 py-2">コイン</th>
+                                    <th class="w-1/5 px-4 py-2">送金元</th><!--送金元場所と枚数-->
+                                    <th class="w-1/5 px-4 py-2">送金先</th><!--送金先場所と枚数-->
+                                    <th class="w-1/5 px-4 py-2">その他手数料</th>
+                                    <th class="w-1/5 px-4 py-2">メモ</th>
+                                    <th class="w-1/5 px-4 py-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($sends as $send)
                                     <tr>
-                                        <td>{{ $send->customtime }}</td>
-                                        <td>{{ $send->coin }}</td>
-                                        <td>
+                                        <td class="w-1/5 px-4 py-2">{{ $send->customtime }}</td>
+                                        <td class="w-1/5 px-4 py-2">{{ $send->coin }}</td>
+                                        <td class="w-1/5 px-4 py-2">
                                             {{ $send->placea }}
                                             {{ rtrim(rtrim(number_format($send->amounta, 8), '0'), '.') }}{{ $send->coin }}
                                         </td>
-                                        <td>
+                                        <td class="w-1/5 px-4 py-2">
                                             {{ $send->placeb }}
                                             {{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}{{ $send->coin }}
                                         </td>
-                                        <td>{{ rtrim(rtrim(number_format($send->customfee, 8), '0'), '.') }}{{ $send->customfeecoin }}
+                                        <td class="w-1/5 px-4 py-2">{{ rtrim(rtrim(number_format($send->customfee, 8), '0'), '.') }}{{ $send->customfeecoin }}
                                         </td>
-                                        <td class="break-words">{{ $send->memo }}</td>
-                                        <td>
+                                        <td class="w-1/5 px-4 py-2 break-words">{{ $send->memo }}</td>
+                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $send->id }}, '{{ $send->customtime }}', '{{ $send->placea }}', '{{ $send->placeb }}', '{{ rtrim(rtrim(number_format($send->amounta, 8), '0'), '.') }}', '{{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}', '{{ $send->coin }}')">
                                                <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
@@ -100,21 +97,21 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>日時</th>
-                                    <th>場所</th>
-                                    <th>コイン</th>
-                                    <th class="w-1/4">メモ</th>
-                                    <th></th>
+                                    <th class="w-1/5 px-4 py-2">日時</th>
+                                    <th class="w-1/5 px-4 py-2">場所</th>
+                                    <th class="w-1/5 px-4 py-2">コイン</th>
+                                    <th class="w-1/5 px-4 py-2">メモ</th>
+                                    <th class="w-1/5 px-4 py-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($deposits as $deposit)
                                     <tr>
-                                        <td>{{ $deposit->customtime }}</td>
-                                        <td>{{ $deposit->place }}</td>
-                                        <td>{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}</td>
-                                        <td class="break-words">{{ $deposit->memo }}</td>
-                                        <td>
+                                        <td class="w-1/5 px-4 py-2">{{ $deposit->customtime }}</td>
+                                        <td class="w-1/5 px-4 py-2">{{ $deposit->place }}</td>
+                                        <td class="w-1/5 px-4 py-2">{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}</td>
+                                        <td class="w-1/5 px-4 py-2 break-words">{{ $deposit->memo }}</td>
+                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }}, '{{ $deposit->customtime }}', '{{ $deposit->place }}', '{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}', '{{ $deposit->coin }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>

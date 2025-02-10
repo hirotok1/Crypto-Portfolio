@@ -38,17 +38,16 @@
                     </div>
                 </div>
                 <!-- 総資産表 -->
-                <table class="border-collapse border border-gray-200 w-11/12 text-center">
+                <table class="w-11/12 text-center">
                     <thead>
                         <tr>
-                            <th class="border border-gray-300 px-4 py-2">ロゴ</th>
-                            <th class="border border-gray-300 px-4 py-2">コイン</th>
-                            <th class="border border-gray-300 px-4 py-2">コインの価格</th>
-                            <th class="border border-gray-300 px-4 py-2">1h%</th>
-                            <th class="border border-gray-300 px-4 py-2">24h%</th>
-                            <th class="border border-gray-300 px-4 py-2">保有枚数</th>
-                            <th class="border border-gray-300 px-4 py-2">保有額</th>
-                            <th class="border border-gray-300 px-4 py-2">内訳</th>
+                            <th class="px-4 py-2">コイン</th>
+                            <th class="px-4 py-2">コインの価格</th>
+                            <th class="px-4 py-2">1h%</th>
+                            <th class="px-4 py-2">24h%</th>
+                            <th class="px-4 py-2">保有枚数</th>
+                            <th class="px-4 py-2">保有額</th>
+                            <th class="px-4 py-2">内訳</th>
                         </tr>
                     </thead>
                     <!-- coinBalanceはポートフォリオの保有枚数 -->
@@ -62,33 +61,54 @@
                                 $logoUrl = $coinId ? ($logos[$coinId]['logo'] ?? '') : '';
                             @endphp
                             <tr>
-                                <td class="border border-gray-300 px-4 py-2 text-center">
+                                <td class="px-4 py-2 text-center">
                                     @if ($logoUrl)
-                                        <img src="{{ $logoUrl }}" alt="{{ $coin }}" width="24" height="24">
-                                    @endif
+                                        <div class="flex ml-2">
+                                            <img src="{{ $logos[$coinIdMap[$coin]]['logo'] ?? '' }}" alt="{{ $coin }}" width="24" height="24" class="inline-block">
+                                            <span class="ml-2">{{ $coin }}</span>
+                                        </div>
+                                        @elseif ($coin)
+                                            <div class="flex items-center justify-center">
+                                                <span class="ml-2">{{ $coin }}</span>
+                                            </div>
+                                        @endif
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">{{ $coin }}</td>
-                                <td class="border border-gray-300 px-4 py-2">
+                                <td class="px-4 py-2">
                                     {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}
                                     {{ number_format($price, 2) }}
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2" style="color: {{ $percentChange1h >= 0 ? 'green' : 'red' }};">
+                                <td class="px-4 py-2" style="color: {{ $percentChange1h >= 0 ? 'green' : 'red' }};">
                                     {{ number_format($percentChange1h, 2) }}%
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2" style="color: {{ $percentChange24h >= 0 ? 'green' : 'red' }};">
+                                <td class="px-4 py-2" style="color: {{ $percentChange24h >= 0 ? 'green' : 'red' }};">
                                     {{ number_format($percentChange24h, 2) }}%
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">
-                                    {{ rtrim(rtrim(number_format($coinBalance, 8), '0'), '.') }}
+                                <td class="px-4 py-2">
+                                    <div class="coin-balance">
+                                        {{ rtrim(rtrim(number_format($coinBalance, 8), '0'), '.') }}
+                                    </div>
+                                    <div class="coin-balance-cover hidden">
+                                        ***
+                                    </div>    
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">
-                                    {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}    
-                                    {{ number_format($price * $coinBalance, 2) }}
+                                <td class="px-4 py-2">
+                                    <div class="coin-asset">
+                                        {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}    
+                                        {{ number_format($price * $coinBalance, 2) }}
+                                    </div>
+                                    <div class="coin-asset-cover hidden">
+                                        ***
+                                    </div>
                                 </td>
-                                <td class="border border-gray-300 px-4 py-2">
-                                    @foreach ($coinPlaces[$coin] as $place)
-                                        {{ $place }}:{{ $placeBalance[$place][$coin] }}{{ $coin }}<br>
-                                    @endforeach
+                                <td class="px-4 py-2">
+                                    <div class="coin-places">
+                                        @foreach ($coinPlaces[$coin] as $place)
+                                            {{ $place }}:{{ $placeBalance[$place][$coin] }}{{ $coin }}<br>
+                                        @endforeach
+                                    </div>
+                                    <div class="coin-places-cover hidden">
+                                        ***
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -96,8 +116,8 @@
                 </table>
 
                 <!-- 場所ごとのコインと枚数 -->
-                <div class="mt-6">
-                    <h2 class="text-lg font-semibold mb-4">場所ごとのコインと枚数</h2>
+                <div class="assets-per-places mt-6">
+                    <h2 class="text-lg font-semibold mb-4">場所ごとの資産</h2>
                     @foreach ($placeBalance as $place => $coins)
                         <div class="mb-4">
                             <h3 class="text-md font-semibold">{{ $place }}</h3>
@@ -109,11 +129,16 @@
                         </div>
                     @endforeach
                 </div>
+                <div class="assets-per-places-cover hidden">
+                    <br>
+                    <h2 class="text-lg font-semibold mb-4">場所ごとの資産</h2>
+                    ***
+                </div>
             </div>
         </div>
     </div>
     
-    <!--Chart.js-->
+    <!--Chart.jsで円グラフ描写-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -157,19 +182,68 @@
     <!-- 総資産表示非表示切り替え -->
     <script>
         document.getElementById('cover-assets-button').addEventListener('click', function() {
+            //総資産の非表示、目を開ける
             document.getElementById('total-assets-uncovered').classList.add('hidden');
             document.getElementById('total-assets-covered').classList.remove('hidden');   
             document.getElementById('cover-assets-button').classList.add('hidden');  
-            document.getElementById('uncover-assets-button').classList.remove('hidden');  
-        });
+            document.getElementById('uncover-assets-button').classList.remove('hidden');
+            //保有枚数、保有額、内訳の非表示
+            document.querySelectorAll('.coin-balance').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.coin-balance-cover').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.coin-asset').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.coin-asset-cover').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.coin-places').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.coin-places-cover').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.assets-per-places').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.assets-per-places-cover').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            });
         document.getElementById('uncover-assets-button').addEventListener('click', function() {
+            //総資産の表示、目を閉じる
             document.getElementById('total-assets-uncovered').classList.remove('hidden');
             document.getElementById('total-assets-covered').classList.add('hidden');  
             document.getElementById('uncover-assets-button').classList.add('hidden');  
-            document.getElementById('cover-assets-button').classList.remove('hidden');     
-        });
+            document.getElementById('cover-assets-button').classList.remove('hidden');  
+            //保有枚数、保有額、内訳の表示
+            document.querySelectorAll('.coin-balance').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.coin-balance-cover').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.coin-asset').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.coin-asset-cover').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.coin-places').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.coin-places-cover').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            document.querySelectorAll('.assets-per-places').forEach(function(element) {
+                element.classList.remove('hidden');
+            });
+            document.querySelectorAll('.assets-per-places-cover').forEach(function(element) {
+                element.classList.add('hidden');
+            });
+            });
     </script>
-
-
-
 </x-app-layout>
