@@ -18,7 +18,7 @@ class MarketController extends Controller
             ],
             'query' => [
                 'start' => 1,
-                'limit' => 100,
+                'limit' => 200,
                 'convert' => $currency, // 選択した通貨を使用
             ],
         ]);

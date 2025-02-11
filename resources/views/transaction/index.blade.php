@@ -306,8 +306,8 @@
                 </div>
                 <!-- ボタン -->
                 <div class="mt-4 flex justify-center">
-                    <button type="button" onclick="closeEditSwapModal()" class="px-4 py-2 bg-gray-400 text-gray-700 rounded">キャンセル</button>
-                    <button type="submit" class="ml-5 px-4 py-2 bg-blue-500 text-gray-700 rounded">更新</button>
+                <button type="button" onclick="closeEditSwapModal()" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition">キャンセル</button>
+                <button type="submit" class="ml-5 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">更新</button>
                 </div>
             </form>
         </div>
@@ -388,8 +388,8 @@
                 </div>
                 <!-- ボタン -->
                 <div class="mt-4 flex justify-center">
-                    <button type="button" onclick="closeEditSendModal()" class="px-4 py-2 bg-gray-400 text-gray-700 rounded">キャンセル</button>
-                    <button type="submit" class="ml-5 px-4 py-2 bg-blue-500 text-gray-700 rounded">更新</button>
+                    <button type="button" onclick="closeEditSendModal()" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition">キャンセル</button>
+                    <button type="submit" class="ml-5 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">更新</button>
                 </div>
             </form>
         </div>
