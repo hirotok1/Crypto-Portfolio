@@ -21,9 +21,9 @@
         <div class="border border-gray-300 p-6 w-3/4 rounded-lg bg-white shadow-lg">
             <!-- タブ -->
             <div class="flex justify-between mb-6">
-                <button id="swap-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-l-lg bg-gray-100">スワップ</button>
-                <button id="send-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-none bg-gray-200">送金</button>
-                <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-r-lg bg-gray-200">振込</button>
+                <button id="swap-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-l-lg bg-gray-100">スワップ</button>
+                <button id="send-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-none bg-gray-300">送金</button>
+                <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-r-lg bg-gray-300">振込</button>
             </div>
 
             <!-- スワップフォーム -->
@@ -253,11 +253,11 @@
             depositForm.classList.add('hidden');
             //swapタブのbg色のみ明るく
             swapTab.classList.add('bg-gray-100');
-            swapTab.classList.remove('bg-gray-200');
+            swapTab.classList.remove('bg-gray-300');
             sendTab.classList.remove('bg-gray-100');
-            sendTab.classList.add('bg-gray-200');
+            sendTab.classList.add('bg-gray-300');
             depositTab.classList.remove('bg-gray-100');
-            depositTab.classList.add('bg-gray-200');
+            depositTab.classList.add('bg-gray-300');
         });
 
         sendTab.addEventListener('click', () => {
@@ -265,11 +265,11 @@
             swapForm.classList.add('hidden');
             depositForm.classList.add('hidden');
             //sendタブのbg色のみ明るく
-            swapTab.classList.add('bg-gray-200');
+            swapTab.classList.add('bg-gray-300');
             swapTab.classList.remove('bg-gray-100');
             sendTab.classList.add('bg-gray-100');
-            sendTab.classList.remove('bg-gray-200');
-            depositTab.classList.add('bg-gray-200');
+            sendTab.classList.remove('bg-gray-300');
+            depositTab.classList.add('bg-gray-300');
             depositTab.classList.remove('bg-gray-100');            
         });
        
@@ -279,11 +279,11 @@
             sendForm.classList.add('hidden');
             //depositタブのbg色のみ明るく
             depositTab.classList.add('bg-gray-100');
-            depositTab.classList.remove('bg-gray-200');
+            depositTab.classList.remove('bg-gray-300');
             swapTab.classList.remove('bg-gray-100');
-            swapTab.classList.add('bg-gray-200');
+            swapTab.classList.add('bg-gray-300');
             sendTab.classList.remove('bg-gray-100');
-            sendTab.classList.add('bg-gray-200');
+            sendTab.classList.add('bg-gray-300');
         });
     </script>
     <!-- 新しいコイン、場所を入力するinputを表示 -->

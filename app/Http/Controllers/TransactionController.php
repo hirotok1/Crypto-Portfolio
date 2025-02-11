@@ -31,12 +31,30 @@ class TransactionController extends Controller
         $places = DB::table('changes')->where('user_id', $user->id)->pluck('place')->unique();
         // ユーザーの全changesのうちcoinを取得し、重複を削除
         $coins = DB::table('changes')->where('user_id', $user->id)->pluck('coin')->unique();
+        
+        //すべて
+        // スワップ取得
+        $swapsforall = DB::table('swaps')->where('user_id', $user->id)
+        ->select('id', 'customtime', DB::raw('"swap" as type'), 'coina', 'coinb', 'amounta', 'amountb', 'place as placea', DB::raw('NULL as placeb'), 'customfeecoin', 'customfee', 'memo')
+        ->get();
+        // 送金取得
+        $sendsforall = DB::table('sends')->where('user_id', $user->id)
+            ->select('id', 'customtime', DB::raw('"send" as type'), 'coin as coina', DB::raw('NULL as coinb'), 'amounta', 'amountb', 'placea', 'placeb', 'customfeecoin', 'customfee', 'memo')
+            ->get();
+        // 振込取得
+        $depositsforall = DB::table('deposits')->where('user_id', $user->id)
+            ->select('id', 'customtime', DB::raw('"deposit" as type'), 'coin as coina', DB::raw('NULL as coinb'), 'amount as amounta', DB::raw('NULL as amountb'), 'place as placea', DB::raw('NULL as placeb'), DB::raw('NULL as customfeecoin'), DB::raw('NULL as customfee'), 'memo')
+            ->get();
+        // データを統合
+        $transactions = collect()->merge($swapsforall)->merge($sendsforall)->merge($depositsforall)->sortByDesc('customtime');
+
         return view('transaction.index', [
             'swaps' => $swaps,
             'sends' => $sends,
             'deposits' => $deposits,
             'places' => $places,
             'coins' => $coins,
+            'transactions' => $transactions,
         ]);
     }
 

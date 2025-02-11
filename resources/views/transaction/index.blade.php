@@ -24,12 +24,143 @@
                 <div class="p-4 bg-white border-b border-gray-200">
                     <!-- タブ -->
                     <div class="flex justify-between mb-4">
-                        <button id="swap-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-l-lg bg-gray-100">スワップ</button>
-                        <button id="send-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-none bg-gray-200">送金</button>
-                        <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-300 rounded-r-lg bg-gray-200">振込 / 引出</button>
+                        <button id="all-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-l-lg bg-gray-100">すべて</button>
+                        <button id="swap-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-none bg-gray-300">スワップ</button>
+                        <button id="send-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-none bg-gray-300">送金</button>
+                        <button id="deposit-tab" class="flex-1 py-2 px-4 border border-gray-100 rounded-r-lg bg-gray-300">振込 / 引出</button>
+                    </div>
+                    <!-- すべてテーブル -->
+                    <div id="all-table" class="block">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="w-1/5 px-4 py-2">日時</th>
+                                    <th class="w-1/5 px-4 py-2">取引タイプ</th>
+                                    <th class="w-1/5 px-4 py-2">取引情報</th>
+                                    <th class="w-1/5 px-4 py-2">手数料</th>
+                                    <th class="w-1/5 px-4 py-2">メモ</th>
+                                    <th class="w-1/5 px-4 py-2"></th>
+                                    <th class="w-1/5 px-4 py-2"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($transactions as $transaction)
+                                    <tr>
+                                        <!-- 日時 -->
+                                        <td class="w-1/5 px-4 py-2">{{ $transaction->customtime }}
+                                        </td>
+                                        <!-- 取引タイプ（色分け） -->
+                                        <td class="w-1/5 px-4 py-2 font-bold">
+                                            @if ($transaction->type === 'swap')
+                                                <span class="text-blue-500">スワップ</span>
+                                            @elseif ($transaction->type === 'send')
+                                                <span class="text-green-500">送金</span>
+                                            @else
+                                                <span class="text-orange-500">振込</span>
+                                            @endif
+                                        </td>
+                                        <!-- 取引情報 -->
+                                        <td class="w-1/5 px-4 py-2">
+                                            @if ($transaction->type === 'swap')
+                                                {{ rtrim(rtrim(number_format($transaction->amounta, 8), '0'), '.') }} {{ $transaction->coina }} →
+                                                {{ rtrim(rtrim(number_format($transaction->amountb, 8), '0'), '.') }} {{ $transaction->coinb }} ({{ $transaction->placea }})
+                                            @elseif ($transaction->type === 'send')
+                                                {{ rtrim(rtrim(number_format($transaction->amounta, 8), '0'), '.') }} {{ $transaction->coina }}
+                                                （{{ $transaction->placea }} → {{ $transaction->placeb }}）
+                                            @else
+                                                {{ rtrim(rtrim(number_format($transaction->amounta, 8), '0'), '.') }} {{ $transaction->coina }}
+                                                ({{ $transaction->placea }})
+                                            @endif
+                                        </td>
+                                        <!-- 手数料 -->
+                                        <td class="w-1/5 px-4 py-2">
+                                            @if ($transaction->customfeecoin)
+                                                {{ number_format($transaction->customfee, 8) }} {{ $transaction->customfeecoin }}
+                                            @else
+                                                なし
+                                            @endif
+                                        </td>
+                                        <!-- メモ -->
+                                        <td class="w-1/5 px-4 py-2">
+                                            {{ $transaction->memo ?? '-' }}
+                                        </td>
+                                        <!-- 編集ボタン -->
+                                        <td class="w-1/5 px-4 py-2">
+                                            @if ($transaction->type === 'swap')
+                                                <!-- スワップ編集ボタン -->
+                                                <button type="button" onclick="showEditSwapModal(
+                                                    '{{ $transaction->id }}',
+                                                    '{{ $transaction->placea }}',
+                                                    '{{ $transaction->coina }}',
+                                                    '{{ $transaction->amounta }}',
+                                                    '{{ $transaction->coinb }}',
+                                                    '{{ $transaction->amountb }}',
+                                                    '{{ $transaction->customfeecoin }}',
+                                                    '{{ $transaction->customfee }}',
+                                                    '{{ $transaction->customtime }}',
+                                                    '{{ $transaction->memo }}',
+                                                )">
+                                                    <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
+                                                    </svg> 
+                                                </button>
+                                            @elseif ($transaction->type === 'send')
+                                                <!-- 送金編集ボタン -->
+                                                <button type="button" onclick="showEditSendModal(
+                                                    '{{ $transaction->id }}',
+                                                    '{{ $transaction->coina }}',
+                                                    '{{ $transaction->placea }}',
+                                                    '{{ $transaction->amounta }}',
+                                                    '{{ $transaction->placeb }}',
+                                                    '{{ $transaction->amountb }}',
+                                                    '{{ $transaction->customfeecoin }}',
+                                                    '{{ $transaction->customfee }}',
+                                                    '{{ $transaction->customtime }}',
+                                                    '{{ $transaction->memo }}',
+                                                )">
+                                                    <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
+                                                    </svg> 
+                                                </button>
+                                            @else
+                                                <!-- 振込編集ボタン -->
+                                                <button type="button" onclick="showEditDepositModal(
+                                                    '{{ $transaction->id }}',
+                                                    '{{ $transaction->coina }}',
+                                                    '{{ $transaction->placea }}',
+                                                    '{{ $transaction->amounta }}',                                                
+                                                    '{{ $transaction->customtime }}',
+                                                    '{{ $transaction->memo }}',
+                                                )">
+                                                    <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
+                                                    </svg> 
+                                                </button>
+                                            @endif
+                                        </td>
+                                        <!-- 削除ボタン -->
+                                        <td class="w-1/5 px-4 py-2">
+                                            @if ($transaction->type === 'swap')
+                                                <!-- スワップ削除ボタン -->
+                                                <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $transaction->id }}, '{{ $transaction->customtime }}', '{{ $transaction->placea }}', '{{ rtrim(rtrim(number_format($transaction->amounta, 8), '0'), '.') }}', '{{ $transaction->coina }}', '{{ rtrim(rtrim(number_format($transaction->amountb, 8), '0'), '.') }}', '{{ $transaction->coinb }}')">
+                                                    <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                                </button>
+                                            @elseif ($transaction->type === 'send')
+                                                <!-- 送金削除ボタン -->
+                                                <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $transaction->id }}, '{{ $transaction->customtime }}', '{{ $transaction->placea }}', '{{ $transaction->placeb }}', '{{ rtrim(rtrim(number_format($transaction->amounta, 8), '0'), '.') }}', '{{ rtrim(rtrim(number_format($transaction->amountb, 8), '0'), '.') }}', '{{ $transaction->coina }}')">
+                                                    <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                                </button>
+                                            @else
+                                                <!-- 振込削除ボタン -->
+                                                <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $transaction->id }}, '{{ $transaction->customtime }}', '{{ $transaction->placea }}', '{{ rtrim(rtrim(number_format($transaction->amounta, 8), '0'), '.') }}', '{{ $transaction->coina }}')">
+                                                    <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                     <!-- スワップテーブル -->
-                    <div id="swap-table" class="block">
+                    <div id="swap-table" class="hidden">
                         <table>
                             <thead>
                                 <tr>
@@ -72,8 +203,6 @@
                                                 <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
                                                 </svg> 
                                             </button>
-                                        </td>
-                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteSwapModal({{ $swap->id }}, '{{ $swap->customtime }}', '{{ $swap->place }}', '{{ rtrim(rtrim(number_format($swap->amounta, 8), '0'), '.') }}', '{{ $swap->coina }}', '{{ rtrim(rtrim(number_format($swap->amountb, 8), '0'), '.') }}', '{{ $swap->coinb }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
@@ -84,7 +213,7 @@
                         </table>
                     </div>
                     <!-- 送金テーブル -->
-                    <div id="send-table" class="hidden">                        
+                    <div id="send-table" class="hidden">
                         <table>
                             <thead>
                                 <tr>
@@ -130,8 +259,6 @@
                                                 <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
                                                 </svg> 
                                             </button>
-                                        </td>
-                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteSendModal({{ $send->id }}, '{{ $send->customtime }}', '{{ $send->placea }}', '{{ $send->placeb }}', '{{ rtrim(rtrim(number_format($send->amounta, 8), '0'), '.') }}', '{{ rtrim(rtrim(number_format($send->amountb, 8), '0'), '.') }}', '{{ $send->coin }}')">
                                                <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
@@ -173,8 +300,6 @@
                                                 <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
                                                 </svg> 
                                             </button>
-                                        </td>
-                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }}, '{{ $deposit->customtime }}', '{{ $deposit->place }}', '{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}', '{{ $deposit->coin }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
@@ -455,7 +580,7 @@
                 </div>
                 <!-- ボタン -->
                 <div class="mt-4 flex justify-center">
-                    <button type="button" onclick="closeEditSendModal()" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition">キャンセル</button>
+                    <button type="button" onclick="closeEditDepositModal()" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition">キャンセル</button>
                     <button type="submit" class="ml-5 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">更新</button>
                 </div>
             </form>
@@ -469,41 +594,61 @@
         document.addEventListener('DOMContentLoaded', function () {
             console.log('JavaScript is loaded correctly in index.blade.php');
         });
-
         document.getElementById('swap-tab').addEventListener('click', function() {
-            document.getElementById('swap-tab').classList.remove('bg-gray-200');
+            document.getElementById('swap-tab').classList.remove('bg-gray-300');
             document.getElementById('swap-tab').classList.add('bg-gray-100');
             document.getElementById('send-tab').classList.remove('bg-gray-100');
-            document.getElementById('send-tab').classList.add('bg-gray-200');
+            document.getElementById('send-tab').classList.add('bg-gray-300');
             document.getElementById('deposit-tab').classList.remove('bg-gray-100');
-            document.getElementById('deposit-tab').classList.add('bg-gray-200');
+            document.getElementById('deposit-tab').classList.add('bg-gray-300');
+            document.getElementById('all-tab').classList.remove('bg-gray-100');
+            document.getElementById('all-tab').classList.add('bg-gray-300');
             document.getElementById('swap-table').classList.remove('hidden');
             document.getElementById('send-table').classList.add('hidden');
             document.getElementById('deposit-table').classList.add('hidden');
+            document.getElementById('all-table').classList.add('hidden');
         });
         document.getElementById('send-tab').addEventListener('click', function() {
             document.getElementById('swap-tab').classList.remove('bg-gray-100');
-            document.getElementById('swap-tab').classList.add('bg-gray-200');
-            document.getElementById('send-tab').classList.remove('bg-gray-200');
+            document.getElementById('swap-tab').classList.add('bg-gray-300');
+            document.getElementById('send-tab').classList.remove('bg-gray-300');
             document.getElementById('send-tab').classList.add('bg-gray-100');
             document.getElementById('deposit-tab').classList.remove('bg-gray-100');
-            document.getElementById('deposit-tab').classList.add('bg-gray-200');
+            document.getElementById('deposit-tab').classList.add('bg-gray-300');
+            document.getElementById('all-tab').classList.remove('bg-gray-100');
+            document.getElementById('all-tab').classList.add('bg-gray-300');
             document.getElementById('swap-table').classList.add('hidden');
             document.getElementById('send-table').classList.remove('hidden');
             document.getElementById('deposit-table').classList.add('hidden');
-            // クリック時にコンソールにメッセージを表示
-            console.log('Send tab clicked');
+            document.getElementById('all-table').classList.add('hidden');
         });
         document.getElementById('deposit-tab').addEventListener('click', function() {
             document.getElementById('swap-tab').classList.remove('bg-gray-100');
-            document.getElementById('swap-tab').classList.add('bg-gray-200');
+            document.getElementById('swap-tab').classList.add('bg-gray-300');
             document.getElementById('send-tab').classList.remove('bg-gray-100');
-            document.getElementById('send-tab').classList.add('bg-gray-200');
-            document.getElementById('deposit-tab').classList.remove('bg-gray-200');
+            document.getElementById('send-tab').classList.add('bg-gray-300');
+            document.getElementById('deposit-tab').classList.remove('bg-gray-300');
             document.getElementById('deposit-tab').classList.add('bg-gray-100');
+            document.getElementById('all-tab').classList.remove('bg-gray-100');
+            document.getElementById('all-tab').classList.add('bg-gray-300');
             document.getElementById('swap-table').classList.add('hidden');
             document.getElementById('send-table').classList.add('hidden');
             document.getElementById('deposit-table').classList.remove('hidden');
+            document.getElementById('all-table').classList.add('hidden');
+        });
+        document.getElementById('all-tab').addEventListener('click', function() {
+            document.getElementById('swap-tab').classList.remove('bg-gray-100');
+            document.getElementById('swap-tab').classList.add('bg-gray-300');
+            document.getElementById('send-tab').classList.remove('bg-gray-100');
+            document.getElementById('send-tab').classList.add('bg-gray-300');
+            document.getElementById('deposit-tab').classList.add('bg-gray-300');
+            document.getElementById('deposit-tab').classList.remove('bg-gray-100');
+            document.getElementById('all-tab').classList.add('bg-gray-100');
+            document.getElementById('all-tab').classList.remove('bg-gray-300');
+            document.getElementById('swap-table').classList.add('hidden');
+            document.getElementById('send-table').classList.add('hidden');
+            document.getElementById('deposit-table').classList.add('hidden');
+            document.getElementById('all-table').classList.remove('hidden');
         });
     </script>
     <!-- 削除確認モーダル -->
@@ -595,7 +740,6 @@
     <script>
         //送金編集モーダル表示
         function showEditSendModal(id, coin, placea, amounta, placeb, amountb, customfeecoin, customfee, customtime, memo) {
-            console.log('hi');
             //フォームのアクションURLを更新
             document.getElementById('edit-send-form').action = '/transaction/edit-send/' + id;
             // 各入力フィールドに値をセット
@@ -653,14 +797,13 @@
             document.getElementById('edit-deposit-coin').value = coin;
             document.getElementById('edit-deposit-place').value = place;
             document.getElementById('edit-deposit-amount').value = amount;
-            console.log('amount set');
             document.getElementById('edit-deposit-customtime').value = customtime;
             document.getElementById('edit-deposit-memo').value = memo;
             // モーダルを表示
             document.getElementById('edit-deposit-modal').classList.remove('hidden');
         }
         //振込編集モーダルを閉じる
-        function closeEditSendModal() {
+        function closeEditDepositModal() {
             document.getElementById('edit-deposit-modal').classList.add('hidden');
         }
         //振込の新しい場所を入力するinputを表示
