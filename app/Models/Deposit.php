@@ -17,4 +17,11 @@ class Deposit extends Model
     {
         return $this->morphMany(Change::class, 'related');
     }
+    protected $fillable = [
+        'coin',
+        'place',
+        'amount',
+        'customtime',
+        'memo',
+    ];
 }

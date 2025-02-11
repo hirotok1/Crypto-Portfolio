@@ -161,6 +161,20 @@
                                         <td class="w-1/5 px-4 py-2">{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}{{ $deposit->coin }}</td>
                                         <td class="w-1/5 px-4 py-2 break-words">{{ $deposit->memo }}</td>
                                         <td class="w-1/5 px-4 py-2">
+                                            <!-- 編集ボタン -->
+                                            <button type="button" onclick="showEditDepositModal(
+                                                '{{ $deposit->id }}',
+                                                '{{ $deposit->coin }}',
+                                                '{{ $deposit->place }}',
+                                                '{{ $deposit->amount }}',                                                
+                                                '{{ $deposit->customtime }}',
+                                                '{{ $deposit->memo }}',
+                                            )">
+                                                <svg class="h-5 w-5 text-zinc-400"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" />
+                                                </svg> 
+                                            </button>
+                                        </td>
+                                        <td class="w-1/5 px-4 py-2">
                                             <button type="button" class="text-red-600" onclick="showDeleteDepositModal({{ $deposit->id }}, '{{ $deposit->customtime }}', '{{ $deposit->place }}', '{{ rtrim(rtrim(number_format($deposit->amount, 8), '0'), '.') }}', '{{ $deposit->coin }}')">
                                                 <svg class="h-5 w-5 text-zinc-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="4" y1="7" x2="20" y2="7" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" />  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
@@ -394,6 +408,60 @@
             </form>
         </div>
     </div>
+    <!-- 振込編集モーダル -->
+    <div id="edit-deposit-modal" class="fixed inset-0 flex items-start justify-center mt-3 bg-black bg-opacity-50 overflow-y-auto hidden" style="padding-top: 7.5vh;">
+        <div class="border border-gray-300 p-6 w-3/4 rounded-lg bg-white shadow-lg">
+            <h2 class="text-lg font-semibold">振込を編集</h2>
+            <form id="edit-deposit-form" method="POST" action="">
+                @csrf
+                @method('PUT')
+                <!-- 振込場所 -->
+                <div class="mt-4">
+                    <label for="edit-deposit-place" class="block text-sm font-medium text-gray-700">振込元場所</label>
+                    <select id="edit-deposit-place" name="edit-place" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <option value="">場所を選択</option>
+                        @foreach($places as $place)
+                            <option value="{{ $place }}">{{ $place }}</option>
+                        @endforeach
+                        <option value="other">新しい場所を追加</option>
+                    </select>
+                    <input type="text" id="edit-deposit-place_other" name="edit-place_other" class="mt-2 block w-full mt-1 border-gray-300 rounded-md shadow-sm" placeholder="新しい場所名を入力" style="display: none;">
+                </div>
+                <!-- 振込コイン -->
+                <div class="mt-4">
+                    <!-- 振込コイン -->
+                    <label for="edit-deposit-coin" class="block text-sm font-medium text-gray-700">コイン</label>
+                    <select id="edit-deposit-coin" name="edit-coin" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                        <option value="">コインを選択</option>
+                        @foreach($coins as $coin)
+                            <option value="{{ $coin }}">{{ $coin }}</option>
+                        @endforeach
+                        <option value="other">新しいコインを追加</option>
+                        <input type="text" id="edit-deposit-coin_other" name="edit-coin_other" class="mt-2 block w-full border-gray-300 rounded-md shadow-sm" placeholder="新しい場所名を入力" style="display: none;">
+                    </select>
+                    <!-- 振込コインの数量 -->
+                    <label for="edit-deposit-amount" class="mt-2 block text-sm font-medium text-gray-700">振込の数量</label>
+                    <input type="number" id="edit-deposit-amount" name="edit-amount" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm" step=any>
+                </div>
+                <!-- 日時 -->
+                <div class="mt-2">
+                    <label for="edit-deposit-customtime" class="block text-sm font-medium text-gray-700">日時</label>
+                    <input type="datetime-local" id="edit-deposit-customtime" name="edit-customtime" class="mt-1 block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                </div>
+                <!-- メモ -->
+                <div class="mt-2">
+                    <label for="edit-deposit-memo" class="block text-sm font-medium text-gray-700">メモ</label>
+                    <textarea id="edit-deposit-memo" name="edit-memo" class="mt-1 block w-full mt-1 border-gray-300 rounded-md shadow-sm"></textarea>
+                </div>
+                <!-- ボタン -->
+                <div class="mt-4 flex justify-center">
+                    <button type="button" onclick="closeEditSendModal()" class="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400 transition">キャンセル</button>
+                    <button type="submit" class="ml-5 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">更新</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     
     <!-------------------------- Javascript ------------------------------>
     <!-- タブ切り替えスクリプト -->
@@ -575,4 +643,56 @@
             }
         });
     </script>
+    <!-- 振込編集モーダル -->
+    <script>
+        //振込編集モーダル表示
+        function showEditDepositModal(id, coin, place, amount, customtime, memo) {
+            //フォームのアクションURLを更新
+            document.getElementById('edit-deposit-form').action = '/transaction/edit-deposit/' + id;
+            // 各入力フィールドに値をセット
+            document.getElementById('edit-deposit-coin').value = coin;
+            document.getElementById('edit-deposit-place').value = place;
+            document.getElementById('edit-deposit-amount').value = amount;
+            console.log('amount set');
+            document.getElementById('edit-deposit-customtime').value = customtime;
+            document.getElementById('edit-deposit-memo').value = memo;
+            // モーダルを表示
+            document.getElementById('edit-deposit-modal').classList.remove('hidden');
+        }
+        //振込編集モーダルを閉じる
+        function closeEditSendModal() {
+            document.getElementById('edit-deposit-modal').classList.add('hidden');
+        }
+        //振込の新しい場所を入力するinputを表示
+        document.getElementById('edit-deposit-place').addEventListener('change', function() {
+            var coinaOther = document.getElementById('edit-deposit-place_other');
+            if (this.value === 'other') {
+                coinaOther.style.display = 'block';
+            } else {
+                coinaOther.style.display = 'none';
+            }
+        });
+        //振込の新しいコインを入力するinputを表示
+        document.getElementById('edit-deposit-coin').addEventListener('change', function() {
+            var placeOther = document.getElementById('edit-deposit-coin_other');
+            if (this.value === 'other') {
+                placeOther.style.display = 'block';
+            } else {
+                placeOther.style.display = 'none';
+            }
+        });
+    </script>        
+    <!-- モーダルの外をクリックするとモーダルを閉じる -->
+    <script>
+        window.addEventListener('click', function(event) {
+            const modals = ['edit-swap-modal', 'edit-send-modal', 'edit-deposit-modal', 'delete-swap-modal', 'delete-send-modal', 'delete-deposit-modal'];
+            modals.forEach(function(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
 </x-app-layout>

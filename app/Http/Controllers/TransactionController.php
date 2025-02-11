@@ -375,24 +375,15 @@ class TransactionController extends Controller
     public function editDeposit(Request $request, Deposit $deposit)
     {
         $validated = $request->validate([
-            'place' => 'required|string|max:255',
-            'coin' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
-            'customtime' => 'required|date',
-            'memo' => 'nullable|string|max:255',
+            'edit-place' => 'required|string|max:255',
+            'edit-coin' => 'required|string|max:255',
+            'edit-amount' => 'required|numeric|min:0',
+            'edit-customtime' => 'required|date',
+            'edit-memo' => 'nullable|string|max:255',
         ]);
-        $coin = $request->input('coin') === 'other' ? $request->input('coin_other') : $request->input('coin');
-        // placeの値が「other」の場合、place_otherの値を使用
-        $place = $request->input('place') === 'other' ? $request->input('place_other') : $request->input('place');
-
-            // deposits テーブルの更新
-        $deposit->update([
-            'place' => $place,
-            'coin' => $coin,
-            'amount' => $validated['amount'],
-            'customtime' => $validated['customtime'],
-            'memo' => $validated['memo'] ?? '',
-        ]);
+        //「other」の場合、place_otherの値を使用
+        $coin = $request->input('edit-coin') === 'other' ? $request->input('edit-coin_other') : $request->input('edit-coin');
+        $place = $request->input('edit-place') === 'other' ? $request->input('edit-place_other') : $request->input('edit-place');
 
         // changes テーブルのデータ更新
         DB::table('changes')
@@ -401,10 +392,18 @@ class TransactionController extends Controller
             ->update([
                 'place' => $place,
                 'coin' => $coin,
-                'change' => $validated['amount'],
-                'customtime' => $validated['customtime'],
+                'change' => $validated['edit-amount'],
+                'customtime' => $validated['edit-customtime'],
                 'updated_at' => now(),
             ]);
+        // deposits テーブルの更新
+        $deposit->update([
+            'place' => $place,
+            'coin' => $coin,
+            'amount' => $validated['edit-amount'],
+            'customtime' => $validated['edit-customtime'],
+            'memo' => $validated['edit-memo'] ?? '',
+        ]);
 
         return redirect()->route('transaction.index')->with('success', '振込が更新されました！');
     }
