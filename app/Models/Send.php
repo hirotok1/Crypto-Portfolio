@@ -18,5 +18,16 @@ class Send extends Model
     {
         return $this->morphMany(Change::class, 'related');
     }
+    protected $fillable = [
+        'coin',
+        'placea',
+        'amounta',
+        'placeb',
+        'amountb',
+        'customfeecoin',
+        'customfee',
+        'customtime',
+        'memo',
+    ];
 
 }

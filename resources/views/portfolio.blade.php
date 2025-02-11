@@ -67,11 +67,11 @@
                                             <img src="{{ $logos[$coinIdMap[$coin]]['logo'] ?? '' }}" alt="{{ $coin }}" width="24" height="24" class="inline-block">
                                             <span class="ml-2">{{ $coin }}</span>
                                         </div>
-                                        @elseif ($coin)
-                                            <div class="flex items-center justify-center">
-                                                <span class="ml-2">{{ $coin }}</span>
-                                            </div>
-                                        @endif
+                                    @elseif ($coin)
+                                        <div class="flex items-center justify-center">
+                                            <span class="ml-2">{{ $coin }}</span>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-2">
                                     {{ session('currency', 'JPY') === 'JPY' ? '¥' : '$' }}

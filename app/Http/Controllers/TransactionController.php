@@ -27,10 +27,16 @@ class TransactionController extends Controller
         $deposits = DB::table('deposits')->where('user_id', $user->id)->orderBy('customtime', 'desc')->get();
         // ユーザーの全changesを取得
         $changes = DB::table('changes')->where('user_id', $user->id)->get();
+        // ユーザーの全changesのうち場所を取得し、重複を削除
+        $places = DB::table('changes')->where('user_id', $user->id)->pluck('place')->unique();
+        // ユーザーの全changesのうちcoinを取得し、重複を削除
+        $coins = DB::table('changes')->where('user_id', $user->id)->pluck('coin')->unique();
         return view('transaction.index', [
             'swaps' => $swaps,
             'sends' => $sends,
             'deposits' => $deposits,
+            'places' => $places,
+            'coins' => $coins,
         ]);
     }
 
@@ -241,5 +247,167 @@ class TransactionController extends Controller
         
         return redirect()->route('transaction.index')->with('success', '振込が削除されました！');
     }
+
+    //スワップデータの編集
+    public function editSwap(Request $request, Swap $swap)
+    {
+        $validated = $request->validate([
+            'edit-place' => 'required|string|max:255',
+            'edit-coina' => 'required|string|max:255',
+            'edit-amounta' => 'required|numeric|min:0',
+            'edit-coinb' => 'required|string|max:255',
+            'edit-amountb' => 'required|numeric|min:0',
+            'edit-customfeecoin' => 'nullable|string|max:255',
+            'edit-customfee' => 'nullable|numeric|min:0',
+            'edit-customtime' => 'required|date',
+            'edit-memo' => 'nullable|string|max:255',
+            'edit-place_other' => 'nullable|string|max:255',
+            'edit-coina_other' => 'nullable|string|max:255',
+            'edit-coinb_other' => 'nullable|string|max:255',
+        ]);
+        // `other` の場合、手入力の値を使用
+        $place = $request->input('edit-place') === 'other' ? $request->input('edit-place_other') : $request->input('edit-place');
+        $coina = $request->input('edit-coina') === 'other' ? $request->input('edit-coina_other') : $request->input('edit-coina');
+        $coinb = $request->input('edit-coinb') === 'other' ? $request->input('edit-coinb_other') : $request->input('edit-coinb');
+        
+        // changes テーブルのデータ更新
+        DB::table('changes')
+            ->where('related_type', 'swaps')
+            ->where('related_id', $swap->id)
+            ->where('coin', $swap->coina)
+            ->update([
+                'place' => $place,
+                'coin' => $coina,
+                'change' => -$validated['edit-amounta'],
+                'customtime' => $validated['edit-customtime'],
+                'updated_at' => now(),
+            ]);
+        DB::table('changes')
+            ->where('related_type', 'swaps')
+            ->where('related_id', $swap->id)
+            ->where('coin', $swap->coinb)
+            ->update([
+                'place' => $place,
+                'coin' => $coinb,
+                'change' => $validated['edit-amountb'],
+                'customtime' => $validated['edit-customtime'],
+                'updated_at' => now(),
+            ]);
+        // swaps テーブルの更新
+        $swap->update([
+            'place' => $place,
+            'coina' => $coina,
+            'amounta' => $validated['edit-amounta'],
+            'coinb' => $coinb,
+            'amountb' => $validated['edit-amountb'],
+            'customfeecoin' => $validated['edit-customfeecoin'] ?? null,
+            'customfee' => $validated['edit-customfee'] ?? 0,
+            'customtime' => $validated['edit-customtime'],
+            'memo' => $validated['edit-memo'] ?? '',
+        ]);
+
+        return redirect()->route('transaction.index')->with('success', 'スワップが更新されました！');
+    }
+    //送金データの編集
+    public function editSend(Request $request, Send $send)
+    {
+        $validated = $request->validate([
+            'edit-coin' => 'required|string|max:255',
+            'edit-placea' => 'required|string|max:255',
+            'edit-amounta' => 'required|numeric|min:0',
+            'edit-placeb' => 'required|string|max:255',
+            'edit-amountb' => 'required|numeric|min:0',
+            'edit-customfeecoin' => 'nullable|string|max:255',
+            'edit-customfee' => 'nullable|numeric|min:0',
+            'edit-customtime' => 'required|date',
+            'edit-memo' => 'nullable|string|max:255',
+            'edit-coin_other' => 'nullable|string|max:255',
+            'edit-placea_other' => 'nullable|string|max:255',
+            'edit-placeb_other' => 'nullable|string|max:255',
+        ]);
+
+        // `other` の場合、手入力の値を使用
+        $coin = $request->input('edit-coin') === 'other' ? $request->input('edit-coin_other') : $request->input('edit-coin');
+        $placea = $request->input('edit-placea') === 'other' ? $request->input('edit-placea_other') : $request->input('edit-placea');
+        $placeb = $request->input('edit-placeb') === 'other' ? $request->input('edit-placeb_other') : $request->input('edit-placeb');
+        
+        // changes テーブルのデータ更新
+        DB::table('changes')
+            ->where('related_type', 'sends')
+            ->where('related_id', $send->id)
+            ->where('place', $send->placea)
+            ->update([
+                'place' => $placea,
+                'coin' => $coin,
+                'change' => -$validated['edit-amounta'],
+                'customtime' => $validated['edit-customtime'],
+                'updated_at' => now(),
+            ]);
+        DB::table('changes')
+            ->where('related_type', 'sends')
+            ->where('related_id', $send->id)
+            ->where('place', $send->placeb)
+            ->update([
+                'place' => $placeb,
+                'coin' => $coin,
+                'change' => $validated['edit-amountb'],
+                'customtime' => $validated['edit-customtime'],
+                'updated_at' => now(),
+            ]);
+        // sends テーブルの更新
+        $send->update([
+            'coin' => $coin,
+            'placea' => $placea,
+            'amounta' => $validated['edit-amounta'],
+            'placeb' => $placeb,
+            'amountb' => $validated['edit-amountb'],
+            'customfeecoin' => $validated['edit-customfeecoin'] ?? null,
+            'customfee' => $validated['edit-customfee'] ?? 0,
+            'customtime' => $validated['edit-customtime'],
+            'memo' => $validated['edit-memo'] ?? '',
+        ]);
+
+        $message = "送金が更新されました: {$placea}{$validated['edit-amounta']}{$coin} → {$placeb}{$validated['edit-amountb']}{$coin}";
+
+        return redirect()->route('transaction.index')->with('success', '送金が更新されました！');
+    }
+    //振込データの編集
+    public function editDeposit(Request $request, Deposit $deposit)
+    {
+        $validated = $request->validate([
+            'place' => 'required|string|max:255',
+            'coin' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0',
+            'customtime' => 'required|date',
+            'memo' => 'nullable|string|max:255',
+        ]);
+        $coin = $request->input('coin') === 'other' ? $request->input('coin_other') : $request->input('coin');
+        // placeの値が「other」の場合、place_otherの値を使用
+        $place = $request->input('place') === 'other' ? $request->input('place_other') : $request->input('place');
+
+            // deposits テーブルの更新
+        $deposit->update([
+            'place' => $place,
+            'coin' => $coin,
+            'amount' => $validated['amount'],
+            'customtime' => $validated['customtime'],
+            'memo' => $validated['memo'] ?? '',
+        ]);
+
+        // changes テーブルのデータ更新
+        DB::table('changes')
+            ->where('related_type', 'deposits')
+            ->where('related_id', $deposit->id)
+            ->update([
+                'place' => $place,
+                'coin' => $coin,
+                'change' => $validated['amount'],
+                'customtime' => $validated['customtime'],
+                'updated_at' => now(),
+            ]);
+
+        return redirect()->route('transaction.index')->with('success', '振込が更新されました！');
+    }
+
   
 }

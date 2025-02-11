@@ -29,6 +29,11 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('/transaction/delete-swap/{swap}', [TransactionController::class, 'deleteSwap'])->name('transaction.deleteSwap');
     Route::delete('/transaction/delete-send/{send}', [TransactionController::class, 'deleteSend'])->name('transaction.deleteSend');
     Route::delete('/transaction/delete-deposit/{deposit}', [TransactionController::class, 'deleteDeposit'])->name('transaction.deleteDeposit');
+
+    Route::put('/transaction/edit-swap/{swap}', [TransactionController::class, 'editSwap'])->name('transaction.editSwap');
+    Route::put('/transaction/edit-send/{send}', [TransactionController::class, 'editSend'])->name('transaction.editSend');
+    Route::put('/transaction/edit-deposit/{deposit}', [TransactionController::class, 'editDeposit'])->name('transaction.editDeposit');
+
 });
 
 Route::get('/set-currency/{currency}', function ($currency) {

@@ -285,7 +285,9 @@
             sendTab.classList.remove('bg-gray-100');
             sendTab.classList.add('bg-gray-200');
         });
-
+    </script>
+    <!-- 新しいコイン、場所を入力するinputを表示 -->
+    <script>
         document.getElementById('coina').addEventListener('change', function() {
             var coinaOther = document.getElementById('coina_other');
             if (this.value === 'other') {
@@ -302,8 +304,6 @@
                 coinbOther.style.display = 'none';
             }
         });
-
-        
         document.getElementById('place').addEventListener('change', function() {
             var placeOther = document.getElementById('place_other');
             if (this.value === 'other') {
@@ -357,6 +357,5 @@
                 placeOther.style.display = 'none';
             }
         });
-
     </script>
 </x-app-layout>

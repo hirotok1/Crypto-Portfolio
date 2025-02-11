@@ -14,6 +14,8 @@
                             <th class="px-4 py-2">No.</th>
                             <th class="px-4 py-2">コイン</th>
                             <th class="px-4 py-2">ティッカー</th>
+                            <th class="px-4 py-2">1h%</th>
+                            <th class="px-4 py-2">24h%</th>
                             <th class="px-4 py-2">価格</th>
                             <th class="px-4 py-2">時価総額</th>
                         </tr>
@@ -27,17 +29,27 @@
                                 'BTC' => '₿',
                                 default => '',
                             };
+                        
                         @endphp
                         @foreach ($data['data'] as $index => $crypto)
+                            @php
+                                $percent_change_1h = $coinData[$crypto['symbol']]['percent_change_1h'] ?? 0;
+                                $percent_change_24h = $coinData[$crypto['symbol']]['percent_change_24h'] ?? 0;
+                                $coin = $crypto['symbol'];
+                                $price = $crypto['quote'][session('currency', 'JPY')]['price'];
+                                $marketcap = $crypto['quote'][session('currency', 'JPY')]['market_cap'];
+                            @endphp
                             <tr>
                                 <td class="px-4 py-2 text-center">{{ $index + 1 }}</td>
                                 <td class="flex px-4 py-2">
                                     <img src="{{ $logos[$crypto['id']]['logo'] ?? '' }}" alt="{{ $crypto['name'] }}" width="24" height="24">
                                     <span class="ml-2">{{ $crypto['name'] }}</span>
                                 </td>
-                                <td class="px-4 py-2 text-center">{{ $crypto['symbol'] }}</td>
-                                <td class="px-4 py-2 text-center">{{ $currencySymbol }}{{ number_format($crypto['quote'][session('currency', 'JPY')]['price'], 2) }}</td>
-                                <td class="px-4 py-2 text-center">{{ $currencySymbol }}{{ number_format($crypto['quote'][session('currency', 'JPY')]['market_cap'], 0) }}</td>
+                                <td class="px-4 py-2 text-center">{{ $coin }}</td>
+                                <td class="px-4 py-2 text-center" style="color: {{ $percent_change_1h >= 0 ? 'green' : 'red' }};">{{ number_format($percent_change_1h, 2) }}%</td>
+                                <td class="px-4 py-2 text-center" style="color: {{ $percent_change_24h >= 0 ? 'green' : 'red' }};">{{ number_format($percent_change_24h, 2) }}%</td>
+                                <td class="px-4 py-2 text-center">{{ $currencySymbol }}{{ number_format($price, 2) }}</td>
+                                <td class="px-4 py-2 text-center">{{ $currencySymbol }}{{ number_format($marketcap, 0) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

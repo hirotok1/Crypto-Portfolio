@@ -18,4 +18,15 @@ class Swap extends Model
     {
         return $this->morphMany(Change::class, 'related');
     }
+    protected $fillable = [
+        'place',
+        'coina',
+        'amounta',
+        'coinb',
+        'amountb',
+        'customfeecoin',
+        'customfee',
+        'customtime',
+        'memo',
+    ];
 }
