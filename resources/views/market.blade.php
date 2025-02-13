@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Crypto時価総額 Top100') }}
+        <h2 class="ml-4 font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('暗号資産 時価総額 トップ200') }}
         </h2>
     </x-slot>
 

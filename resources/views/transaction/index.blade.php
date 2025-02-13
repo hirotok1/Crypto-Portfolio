@@ -77,7 +77,7 @@
                                             @if ($transaction->customfeecoin)
                                                 {{ number_format($transaction->customfee, 8) }} {{ $transaction->customfeecoin }}
                                             @else
-                                                なし
+                                                
                                             @endif
                                         </td>
                                         <!-- メモ -->
