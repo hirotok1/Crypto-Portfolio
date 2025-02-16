@@ -14,9 +14,13 @@ https://cypto-portfolio-a16d2c65ca0e.herokuapp.com/portfolio
 
 # 使用している主な技術
 バックエンドフレームワーク Laravel
+
 フロンドエンド言語 Javascript
+
 バックエンド言語 PHP
+
 データベース Mysql
+
 インフラ Amazon aws
 
 # ER図
