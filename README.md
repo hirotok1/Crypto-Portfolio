@@ -27,9 +27,13 @@ https://app.diagrams.net/?src=about#G1hBX53dqJFv4W7Axz0GQBLE2w0-5xzYDZ#%7B%22pag
 Laravelによる構成が基本となっている．
 
 マイグレーションファイル \Crypto-Portfolio\src\database\migrations
+
 モデル \Crypto-Portfolio\src\app\Models
+
 コントローラー \Crypto-Portfolio\src\app\Http\Controllers
+
 ビュー \Crypto-Portfolio\src\resources\views
+
 ルーティング \Crypto-Portfolio\src\routes\web.php
 
 # 今後の展望
